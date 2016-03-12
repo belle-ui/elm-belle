@@ -2,9 +2,10 @@ module AccordionExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Widget.Accordion as Accordion
+import Belle.Accordion as Accordion
 import Signal
 import StartApp.Simple as StartApp
+import Util
 
 
 type alias AccordionEntry =
@@ -36,7 +37,9 @@ view address entries =
       , getExpanded = .expanded
       }
   in
-    Accordion.view accordionOpts entries
+    div [ ]
+    [ Accordion.view accordionOpts entries
+    , Util.stylesheetLink "/accordion-example.css" ]
 
 
 type Action

@@ -1,4 +1,4 @@
-module Widget.Accordion (Accordion, view) where
+module Belle.Accordion (Accordion, view, css) where
 
 import Html exposing (Html, Attribute, div)
 import Html.Attributes exposing (attribute)
