@@ -1,4 +1,4 @@
-module Main (..) where
+module AccordionExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -21,9 +21,9 @@ main =
 
 entries : List AccordionEntry
 entries =
-  [ { id = 0, heading = "Top Thing", body = "Top Content", expanded = False }
-  , { id = 1, heading = "Middle Thing", body = "Middle Content", expanded = True }
-  , { id = 2, heading = "Bottom Thing", body = "Bottom Content", expanded = False }
+  [ { id = 0, heading = "First Thing", body = "First Content", expanded = False }
+  , { id = 1, heading = "Second Thing", body = "Second Content", expanded = True }
+  , { id = 2, heading = "Third Thing", body = "Third Content", expanded = False }
   ]
 
 

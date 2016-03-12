@@ -1,11 +1,30 @@
 module Widget.Accordion (Accordion, view) where
 
 import Html exposing (Html, Attribute, div)
-import Html.Attributes exposing (class, classList, attribute)
+import Html.Attributes exposing (attribute)
 import Html.Events exposing (on)
 import Signal exposing (Message)
 import Json.Decode
+import Css exposing (..)
+import Css.Elements as Css
+import Html.CssHelpers exposing (namespace)
 
+type CssClasses =
+  AccordionContentCollapsed | AccordionContentExpanded | AccordionHeader | AccordionEntry
+
+{ class, classList, id } = Html.CssHelpers.namespace ""
+
+css =
+  (stylesheet)
+    [ (.) AccordionContentCollapsed
+        [ Css.height (px 960) ]
+    , (.) AccordionContentExpanded
+        [ Css.height (px 0) ]
+    , (.) AccordionHeader
+        [ ]
+    , (.) AccordionEntry
+        [ ]
+    ]
 
 {-| Functions which indicate how to display your `entry` type as an
 accordion section.
@@ -50,16 +69,12 @@ view accordion entries =
         expanded =
           accordion.getExpanded entry
 
-        entryClass =
-          classList
-            [ "accordion-entry" => True
-            , "accordion-entry-state-expanded" => expanded
-            , "accordion-entry-state-collapsed" => (not expanded)
-            ]
+        contentClass =
+          if expanded then AccordionContentExpanded else AccordionContentCollapsed
 
         entryHeader =
           div
-            [ class "accordion-entry-header"
+            [ class [ AccordionHeader ]
             , on
                 "click"
                 (Json.Decode.succeed ())
@@ -67,18 +82,19 @@ view accordion entries =
             ]
             [ accordion.viewHeader entry ]
 
-        entryPanel =
+        entryContent =
           div
-            [ class "accordion-entry-panel", role "tabpanel" ]
+            [ class [ contentClass ], role "tabpanel" ]
             [ accordion.viewPanel entry ]
       in
         div
-          [ entryClass, role "tab" ]
-          [ entryHeader, entryPanel ]
+          [ class [ AccordionEntry ]
+          , role "tab"
+          ]
+          [ entryHeader, entryContent ]
   in
     div
-      [ class "accordion"
-      , role "tablist"
+      [ role "tablist"
       , attribute "aria-live" "polite"
       ]
       (List.map viewEntry entries)
