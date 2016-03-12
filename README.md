@@ -22,4 +22,7 @@ elm-format examples/
 ```
 cd examples
 elm package install
+elm reactor -a=localhost
 ```
+
+Visit: `http://localhost:8000/Accordion.elm` in your browser
