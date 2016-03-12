@@ -1,2 +1,7 @@
-# elm-belle
-Elm Components
+# Belle (Elm)
+
+# Development
+
+```
+elm package install
+```
