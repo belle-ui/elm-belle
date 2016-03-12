@@ -1,0 +1,11 @@
+{
+  "name": "elm-belle",
+  "version": "0.0.0",
+  "description": "Belle Components",
+  "devDependencies": {
+    "chalk": "1.1.1",
+    "commander": "2.9.0",
+    "node-elm-compiler": "2.3.2",
+    "tmp": "0.0.28"
+  }
+}

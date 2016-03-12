@@ -17,9 +17,11 @@ type CssClasses =
 css =
   (stylesheet)
     [ (.) AccordionContentCollapsed
-        [ Css.height (px 960) ]
+        [ height (px 0)
+        , overflow hidden ]
     , (.) AccordionContentExpanded
-        [ Css.height (px 0) ]
+        [ overflow hidden
+        , backgroundColor (rgb 240 240 240) ]
     , (.) AccordionHeader
         [ ]
     , (.) AccordionEntry
