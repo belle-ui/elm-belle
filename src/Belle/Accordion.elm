@@ -9,24 +9,38 @@ import Css exposing (..)
 import Css.Elements as Css
 import Html.CssHelpers exposing (namespace)
 
-type CssClasses =
-  AccordionContentCollapsed | AccordionContentExpanded | AccordionHeader | AccordionEntry
 
-{ class, classList, id } = Html.CssHelpers.namespace ""
+type CssClasses
+  = AccordionContentCollapsed
+  | AccordionContentExpanded
+  | AccordionHeader
+  | AccordionEntry
+
+
+{ class, classList, id } =
+  Html.CssHelpers.namespace ""
+
 
 css =
   (stylesheet)
-    [ (.) AccordionContentCollapsed
+    [ (.)
+        AccordionContentCollapsed
         [ height (px 0)
-        , overflow hidden ]
-    , (.) AccordionContentExpanded
+        , overflow hidden
+        ]
+    , (.)
+        AccordionContentExpanded
         [ overflow hidden
-        , backgroundColor (rgb 240 240 240) ]
-    , (.) AccordionHeader
-        [ ]
-    , (.) AccordionEntry
-        [ ]
+        , backgroundColor (rgb 240 240 240)
+        ]
+    , (.)
+        AccordionHeader
+        []
+    , (.)
+        AccordionEntry
+        []
     ]
+
 
 {-| Functions which indicate how to display your `entry` type as an
 accordion section.
@@ -72,7 +86,10 @@ view accordion entries =
           accordion.getExpanded entry
 
         contentClass =
-          if expanded then AccordionContentExpanded else AccordionContentCollapsed
+          if expanded then
+            AccordionContentExpanded
+          else
+            AccordionContentCollapsed
 
         entryHeader =
           div

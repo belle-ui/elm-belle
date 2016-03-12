@@ -37,9 +37,11 @@ view address entries =
       , getExpanded = .expanded
       }
   in
-    div [ ]
-    [ Accordion.view accordionOpts entries
-    , Util.stylesheetLink "/accordion-example.css" ]
+    div
+      []
+      [ Accordion.view accordionOpts entries
+      , Util.stylesheetLink "/accordion-example.css"
+      ]
 
 
 type Action
