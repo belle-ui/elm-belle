@@ -1,6 +1,5 @@
 module Widget.Accordion (Accordion, view) where
 
-
 import Html exposing (Html, Attribute, div)
 import Html.Attributes exposing (class, classList, attribute)
 import Html.Events exposing (on)
@@ -26,11 +25,11 @@ the given `entry` is to become expanded, followed by the `entry` itself.
 to be displayed in expanded form.
 -}
 type alias Accordion entry =
-    { viewHeader : entry -> Html
-    , viewPanel : entry -> Html
-    , setExpanded : Bool -> entry -> Message
-    , getExpanded : entry -> Bool
-    }
+  { viewHeader : entry -> Html
+  , viewPanel : entry -> Html
+  , setExpanded : Bool -> entry -> Message
+  , getExpanded : entry -> Bool
+  }
 
 
 {-| Render an Accordion view.
@@ -45,53 +44,59 @@ how we can display an `entry` as an accordion section.
 -}
 view : Accordion entry -> List entry -> Html
 view accordion entries =
-    let
-        viewEntry entry =
-            let
-                expanded =
-                    accordion.getExpanded entry
+  let
+    viewEntry entry =
+      let
+        expanded =
+          accordion.getExpanded entry
 
-                entryClass =
-                    classList
-                        [ "accordion-entry" => True
-                        , "accordion-entry-state-expanded" => expanded
-                        , "accordion-entry-state-collapsed" => (not expanded)
-                        ]
-
-                entryHeader =
-                    div
-                        [ class "accordion-entry-header"
-                        , on
-                            "click"
-                            (Json.Decode.succeed ())
-                            (\_ -> accordion.setExpanded (not expanded) entry)
-                        ]
-                        [ accordion.viewHeader entry ]
-
-                entryPanel =
-                    div
-                        [ class "accordion-entry-panel", role "tabpanel" ]
-                        [ accordion.viewPanel entry ]
-            in
-                div
-                    [ entryClass, role "tab" ]
-                    [ entryHeader, entryPanel ]
-    in
-        div
-            [ class "accordion"
-            , role "tablist"
-            , attribute "aria-live" "polite"
+        entryClass =
+          classList
+            [ "accordion-entry" => True
+            , "accordion-entry-state-expanded" => expanded
+            , "accordion-entry-state-collapsed" => (not expanded)
             ]
-            (List.map viewEntry entries)
+
+        entryHeader =
+          div
+            [ class "accordion-entry-header"
+            , on
+                "click"
+                (Json.Decode.succeed ())
+                (\_ -> accordion.setExpanded (not expanded) entry)
+            ]
+            [ accordion.viewHeader entry ]
+
+        entryPanel =
+          div
+            [ class "accordion-entry-panel", role "tabpanel" ]
+            [ accordion.viewPanel entry ]
+      in
+        div
+          [ entryClass, role "tab" ]
+          [ entryHeader, entryPanel ]
+  in
+    div
+      [ class "accordion"
+      , role "tablist"
+      , attribute "aria-live" "polite"
+      ]
+      (List.map viewEntry entries)
+
 
 
 {- Convenience for making tuples. Looks nicer in conjunction with classList. -}
-(=>) : a -> b -> (a, b)
+
+
+(=>) : a -> b -> ( a, b )
 (=>) =
-    (,)
+  (,)
+
 
 
 {- Convenience for defining role attributes, e.g. <div role="tabpanel"> -}
+
+
 role : String -> Attribute
 role =
-    attribute "role"
+  attribute "role"
