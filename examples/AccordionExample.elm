@@ -1,10 +1,11 @@
-module Main (..) where
+module AccordionExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Widget.Accordion as Accordion
+import Belle.Accordion as Accordion
 import Signal
 import StartApp.Simple as StartApp
+import Util
 
 
 type alias AccordionEntry =
@@ -21,9 +22,9 @@ main =
 
 entries : List AccordionEntry
 entries =
-  [ { id = 0, heading = "Top Thing", body = "Top Content", expanded = False }
-  , { id = 1, heading = "Middle Thing", body = "Middle Content", expanded = True }
-  , { id = 2, heading = "Bottom Thing", body = "Bottom Content", expanded = False }
+  [ { id = 0, heading = "First Thing", body = "First Content", expanded = False }
+  , { id = 1, heading = "Second Thing", body = "Second Content", expanded = True }
+  , { id = 2, heading = "Third Thing", body = "Third Content", expanded = False }
   ]
 
 
@@ -36,7 +37,11 @@ view address entries =
       , getExpanded = .expanded
       }
   in
-    Accordion.view accordionOpts entries
+    div
+      []
+      [ Accordion.view accordionOpts entries
+      , Util.stylesheetLink "/accordion-example.css"
+      ]
 
 
 type Action
