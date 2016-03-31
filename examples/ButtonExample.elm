@@ -11,11 +11,13 @@ import Util
 main =
   StartApp.start { model = "", view = view, update = update }
 
+model = 0
 
-view =
+
+view address model =
   div
     []
-    [ Button.view
+    [ Button.view "hey"
     , Util.stylesheetLink "/button-example.css"
     ]
 

@@ -24,11 +24,10 @@ css =
     ]
 
 
-type alias Button =
-  {}
+type alias Button = String
 
-view : Button -> Html
-view button =
+view : String -> Html
+view buttonx =
   let
     buttonText = "Follow Me"
   in
