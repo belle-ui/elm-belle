@@ -7,21 +7,22 @@ import Signal
 import StartApp.Simple as StartApp
 import Util
 
-
 main =
   StartApp.start { model = model, view = view, update = update }
 
-model : Button.Button
+model : List Button.Button
 model = 
-  { content = "hey"
-  , primary = True 
-  }
+  [ { content = "hey", primary = True }
+  , { content = "hey2", primary = False }
+  ]
 
 
 view address model =
   div
     []
-    [ Button.view model
+    [ div 
+      []
+      ( List.map (\entry -> Button.view entry) model )
     , Util.stylesheetLink "/button-example.css"
     ]
 

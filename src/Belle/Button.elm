@@ -7,7 +7,8 @@ import Html.CssHelpers exposing (namespace)
 
 
 type CssClasses
-  = ButtonBase
+  = ButtonDefault
+  | ButtonPrimary
 
 
 { class, classList, id } =
@@ -17,10 +18,11 @@ type CssClasses
 css =
   (stylesheet)
     [ (.)
-        ButtonBase
-        [ height (px 20)
-        , overflow hidden
-        ]
+        ButtonDefault
+        [ backgroundColor (rgb 100 100 100) ]
+    , (.)
+        ButtonPrimary
+        [ backgroundColor (rgb 240 240 240) ]
     ]
 
 
@@ -30,10 +32,13 @@ type alias Button = {
 }
 
 view : Button -> Html
-view buttonx =
+view parameters =
   let
     buttonText = "Follow Me"
+
+    classes = if parameters.primary then ButtonPrimary else ButtonDefault
   in
     button
-      []
-      [text buttonx.content]
+      [ class [ classes ] 
+      ]
+      [text parameters.content]
