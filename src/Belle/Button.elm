@@ -24,13 +24,16 @@ css =
     ]
 
 
-type alias Button = String
+type alias Button = {
+  content: String,
+  primary: Bool
+}
 
-view : String -> Html
+view : Button -> Html
 view buttonx =
   let
     buttonText = "Follow Me"
   in
     button
       []
-      [text buttonText]
+      [text buttonx.content]

@@ -9,15 +9,19 @@ import Util
 
 
 main =
-  StartApp.start { model = "", view = view, update = update }
+  StartApp.start { model = model, view = view, update = update }
 
-model = 0
+model : Button.Button
+model = 
+  { content = "hey"
+  , primary = True 
+  }
 
 
 view address model =
   div
     []
-    [ Button.view "hey"
+    [ Button.view model
     , Util.stylesheetLink "/button-example.css"
     ]
 
