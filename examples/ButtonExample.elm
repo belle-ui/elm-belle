@@ -44,8 +44,11 @@ buttons : List Button.Button
 buttons =
   [ { content = "+", primary = False, type' = "submit", disabled = False, onClick = Signal.message source.address Increment }
   , { content = "-", primary = False, type' = "button", disabled = False, onClick = Signal.message source.address Decrement }
-  , { content = "primary", primary = True, type' = "button", disabled = True, onClick = Signal.message source.address Decrement }
   ]
+
+
+single : Button.Button
+single = { content = "primary", primary = True, type' = "button", disabled = True, onClick = Signal.message source.address Decrement }
 
 
 view : State -> Html
@@ -53,6 +56,7 @@ view state =
   div
     []
     [ div [] (List.map (\entry -> Button.view entry) buttons)
+    , div [] [ Button.view single ]
     , div [] [ text (toString state.count) ]
     , Util.stylesheetLink "/button-example.css"
     ]
