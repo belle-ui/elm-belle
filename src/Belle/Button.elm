@@ -9,6 +9,7 @@ import Html.CssHelpers exposing (namespace)
 import Signal exposing (Message)
 import Json.Decode
 
+
 type CssClasses
   = ButtonDefault
   | ButtonPrimary
@@ -29,7 +30,7 @@ css =
     ]
 
 
-type alias Button = 
+type alias Button =
   { content : String
   , primary : Bool
   , type' : String
@@ -37,11 +38,18 @@ type alias Button =
   , onClick : Message
   }
 
+
 view : Button -> Html
 view parameters =
   let
-    this_type = parameters.type'
-    classes = if parameters.primary then ButtonPrimary else ButtonDefault
+    this_type =
+      parameters.type'
+
+    classes =
+      if parameters.primary then
+        ButtonPrimary
+      else
+        ButtonDefault
   in
     button
       [ class [ classes ]
@@ -49,4 +57,4 @@ view parameters =
       , on "click" (Json.Decode.succeed ()) (\_ -> parameters.onClick)
       , Html.Attributes.disabled parameters.disabled
       ]
-      [text parameters.content]
+      [ text parameters.content ]
