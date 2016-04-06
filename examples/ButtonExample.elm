@@ -7,24 +7,41 @@ import Signal
 import StartApp.Simple as StartApp
 import Util
 
-main =
-  StartApp.start { model = model, view = view, update = update }
+type alias State = { count: Int }
 
-model : List Button.Button
-model = 
-  [ { content = "hey", primary = True }
-  , { content = "hey2", primary = False }
+init : State
+init = { count = 1 }
+
+source : Signal.Mailbox Action
+source = Signal.mailbox NoOp
+
+type Action = NoOp | Increment
+
+update : Action -> State -> State
+update action before =
+  case action of
+    NoOp ->
+      before
+    Increment ->
+      { before | count = before.count + 1 }
+
+buttons : List Button.Button
+buttons = 
+  [ { content = "hey4", primary = True, type' = "submit", disabled = False }
+  , { content = "hey2", primary = False, type' = "button", disabled = True }
   ]
 
-
-view address model =
-  div
+view : State -> Html
+view state =
+  div 
     []
-    [ div 
-      []
-      ( List.map (\entry -> Button.view entry) model )
-    , Util.stylesheetLink "/button-example.css"
+    [ div [] ( List.map (\entry -> Button.view entry) buttons )
+    , div [] [ text (toString state.count) ]
     ]
+  
 
-
-update model = model
+main : Signal Html
+main = Signal.map view state
+  
+state : Signal State
+state = Signal.foldp update init source.signal

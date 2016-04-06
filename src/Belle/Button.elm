@@ -1,9 +1,12 @@
 module Belle.Button (Button, view, css) where
 
-import Html exposing (Html, button, text)
+import Html exposing (Html, button, text, Attribute)
+import Html.Attributes exposing (type', disabled)
+import Html.Events exposing (onClick)
 import Css exposing (..)
 import Css.Elements as Css
 import Html.CssHelpers exposing (namespace)
+import Signal exposing (Message)
 
 
 type CssClasses
@@ -26,19 +29,22 @@ css =
     ]
 
 
-type alias Button = {
-  content: String,
-  primary: Bool
-}
+type alias Button = 
+  { content : String
+  , primary : Bool
+  , type' : String
+  , disabled : Bool
+  }
 
 view : Button -> Html
 view parameters =
   let
-    buttonText = "Follow Me"
-
+    this_type = parameters.type'
     classes = if parameters.primary then ButtonPrimary else ButtonDefault
   in
     button
-      [ class [ classes ] 
+      [ class [ classes ]
+      , type' this_type
+      , Html.Attributes.disabled parameters.disabled
       ]
       [text parameters.content]
