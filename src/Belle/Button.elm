@@ -37,6 +37,8 @@ type alias Button =
   , type' : String
   , disabled : Bool
   , onClick : Message
+  , hoverStyle : List (String, String, String)
+  , focusStyle : List (String, String, String)
   }
 
 
@@ -58,8 +60,8 @@ view parameters =
 
     attributesStyle =
       List.append
-        (DynamicStyle.hover [ ( "color", "blue", "green" ) ])
-        (DynamicStyle.focus [ ( "color", "blue", "red" ) ])
+        (DynamicStyle.hover parameters.hoverStyle)
+        (DynamicStyle.focus parameters.focusStyle)
 
     attributes =
       List.append attributesStyle attributesBehaviour
