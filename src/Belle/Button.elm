@@ -2,12 +2,12 @@ module Belle.Button (Button, view, css) where
 
 import Html exposing (Html, button, text, Attribute)
 import Html.Attributes exposing (type', disabled)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, on)
 import Css exposing (..)
 import Css.Elements as Css
 import Html.CssHelpers exposing (namespace)
 import Signal exposing (Message)
-
+import Json.Decode
 
 type CssClasses
   = ButtonDefault
@@ -34,6 +34,7 @@ type alias Button =
   , primary : Bool
   , type' : String
   , disabled : Bool
+  , onClick : Message
   }
 
 view : Button -> Html
@@ -45,6 +46,7 @@ view parameters =
     button
       [ class [ classes ]
       , type' this_type
+      , on "click" (Json.Decode.succeed ()) (\_ -> parameters.onClick)
       , Html.Attributes.disabled parameters.disabled
       ]
       [text parameters.content]

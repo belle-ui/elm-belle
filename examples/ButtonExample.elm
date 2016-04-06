@@ -15,7 +15,7 @@ init = { count = 1 }
 source : Signal.Mailbox Action
 source = Signal.mailbox NoOp
 
-type Action = NoOp | Increment
+type Action = NoOp | Increment | Decrement
 
 update : Action -> State -> State
 update action before =
@@ -24,11 +24,14 @@ update action before =
       before
     Increment ->
       { before | count = before.count + 1 }
+    Decrement ->
+      { before | count = before.count - 1 }
 
 buttons : List Button.Button
 buttons = 
-  [ { content = "hey4", primary = True, type' = "submit", disabled = False }
-  , { content = "hey2", primary = False, type' = "button", disabled = True }
+  [ { content = "+", primary = False, type' = "submit", disabled = False, onClick = Signal.message source.address Increment }
+  , { content = "-", primary = False, type' = "button", disabled = False, onClick = Signal.message source.address Decrement }
+  , { content = "primary", primary = True, type' = "button", disabled = True, onClick = Signal.message source.address Decrement }
   ]
 
 view : State -> Html
