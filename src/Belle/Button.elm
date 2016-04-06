@@ -6,6 +6,7 @@ import Html.Events exposing (on)
 import Css exposing (..)
 import Css.Elements as Css
 import Html.CssHelpers exposing (namespace)
+import DynamicStyle exposing (hover)
 import Signal exposing (Message)
 import Json.Decode exposing (succeed)
 
@@ -47,11 +48,22 @@ view parameters =
         ButtonPrimary
       else
         ButtonDefault
-  in
-    button
+
+    attributesBehaviour =
       [ class [ classes ]
       , type' parameters.type'
       , on "click" (succeed ()) (\_ -> parameters.onClick)
       , Html.Attributes.disabled parameters.disabled
       ]
+
+    attributesStyle =
+      List.append
+        (DynamicStyle.hover [ ( "color", "blue", "green" ) ])
+        (DynamicStyle.focus [ ( "color", "blue", "red" ) ])
+
+    attributes =
+      List.append attributesStyle attributesBehaviour
+  in
+    button
+      (attributes)
       [ text parameters.content ]
