@@ -11,7 +11,6 @@ import Util
 type alias State =
   { count : Int }
 
-
 init : State
 init =
   { count = 1 }
@@ -55,6 +54,7 @@ view state =
     []
     [ div [] (List.map (\entry -> Button.view entry) buttons)
     , div [] [ text (toString state.count) ]
+    , Util.stylesheetLink "/button-example.css"
     ]
 
 
