@@ -2,7 +2,8 @@ module ButtonExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Belle.Button as Button
+import Belle.Button exposing (belleButton)
+import Html.Events exposing (onClick)
 import Signal
 import StartApp.Simple as StartApp
 import Util
@@ -47,25 +48,18 @@ update action previous =
 --  ]
 
 
-single : Button.Button
-single = 
-  { content = "primary"
-  , primary = True
-  , type' = "button"
-  , disabled = False
-  , onClick = Signal.message source.address Increment
-  , hoverStyle = [ ( "color", "blue", "yellow" ) ]
-  , focusStyle = [ ( "color", "blue", "red" ) ]
-  }
-
-
 view : State -> Html
 view state =
   div
     []
     [ span [] [ text (toString state.count) ]
     --, span [] (List.map (\entry -> Button.view entry) buttons)
-    , div [] [ Button.view single ]
+    , div
+      []
+      [ belleButton
+        [ onClick source.address Increment ]
+        [ text "Yay" ]
+      ]
     , Util.stylesheetLink "/button-example.css"
     ]
 

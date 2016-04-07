@@ -1,14 +1,9 @@
-module Belle.Button (Button, view, css) where
+module Belle.Button (css, belleButton) where
 
-import Html exposing (Html, button, text, Attribute)
-import Html.Attributes exposing (type')
-import Html.Events exposing (on)
+import Html exposing (Html, button, Attribute)
 import Css exposing (..)
 import Css.Elements as Css
 import Html.CssHelpers exposing (namespace)
-import DynamicStyle exposing (hover)
-import Signal exposing (Message)
-import Json.Decode exposing (succeed)
 
 
 type CssClasses
@@ -31,41 +26,21 @@ css =
     ]
 
 
-type alias Button =
-  { content : String
-  , primary : Bool
-  , type' : String
-  , disabled : Bool
-  , onClick : Message
-  , hoverStyle : List (String, String, String)
-  , focusStyle : List (String, String, String)
-  }
-
-
-view : Button -> Html
-view parameters =
+belleButton : List Attribute -> List Html -> Html
+belleButton attributes html =
   let
-    classes =
-      if parameters.primary then
-        ButtonPrimary
-      else
-        ButtonDefault
-
-    attributesBehaviour =
-      [ class [ classes ]
-      , type' parameters.type'
-      , on "click" (succeed ()) (\_ -> parameters.onClick)
-      , Html.Attributes.disabled parameters.disabled
+    classes = ButtonDefault
+      -- if attributes.primary then
+      --   ButtonPrimary
+      -- else
+      --   ButtonDefault
+    newAttributes =
+      attributes
+      ++
+      [
+        class [ classes ]
       ]
-
-    attributesStyle =
-      List.append
-        (DynamicStyle.hover parameters.hoverStyle)
-        (DynamicStyle.focus parameters.focusStyle)
-
-    attributes =
-      List.append attributesStyle attributesBehaviour
   in
     button
-      (attributes)
-      [ text parameters.content ]
+      newAttributes
+      html
