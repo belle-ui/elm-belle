@@ -10,8 +10,10 @@ import StartApp.Simple as StartApp
 import Util
 import Json.Encode exposing (string)
 
+
 type alias State =
   { count : Int }
+
 
 init : State
 init =
@@ -48,16 +50,17 @@ view state =
     []
     [ span [] [ text (toString state.count) ]
     , div
-      []
-      [ Belle.Button.button
-        [ onClick source.address Increment ]
-        [ text "Increment" ]
-      , Belle.Button.button
-        [ onClick source.address Decrement
-        , attribute "class" "my-custom-class2" -- this does not work :(
+        []
+        [ Belle.Button.button
+            [ onClick source.address Increment ]
+            [ text "Increment" ]
+        , Belle.Button.button
+            [ onClick source.address Decrement
+            , attribute "class" "my-custom-class2"
+              -- this does not work :(
+            ]
+            [ text "Decrement" ]
         ]
-        [ text "Decrement" ]
-      ]
     , Util.stylesheetLink "/button-example.css"
     ]
 
