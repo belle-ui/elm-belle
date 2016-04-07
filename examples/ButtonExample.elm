@@ -25,19 +25,23 @@ type Action
   = NoOp
   | Increment
   | Decrement
+  | Add Int
 
 
 update : Action -> State -> State
-update action before =
+update action previous =
   case action of
     NoOp ->
-      before
+      previous
 
     Increment ->
-      { before | count = before.count + 1 }
+      { previous | count = previous.count + 1 }
 
     Decrement ->
-      { before | count = before.count - 1 }
+      { previous | count = previous.count - 1 }
+
+    Add int ->
+      { previous | count = previous.count + int }
 
 
 --buttons : List Button.Button
@@ -53,7 +57,7 @@ single =
   , primary = True
   , type' = "button"
   , disabled = False
-  , onClick = Signal.message source.address Decrement
+  , onClick = Signal.message source.address (Add 2)
   , hoverStyle = [ ( "color", "blue", "yellow" ) ]
   , focusStyle = [ ( "color", "blue", "red" ) ]
   }
@@ -63,8 +67,8 @@ view : State -> Html
 view state =
   div
     []
-    [ --span [] (List.map (\entry -> Button.view entry) buttons)
-    span [] [ text (toString state.count) ]
+    [ span [] [ text (toString state.count) ]
+    --, span [] (List.map (\entry -> Button.view entry) buttons)
     , div [] [ Button.view single ]
     , Util.stylesheetLink "/button-example.css"
     ]
