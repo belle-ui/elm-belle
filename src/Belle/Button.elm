@@ -1,14 +1,14 @@
-module Belle.Button (css, belleButton) where
+module Belle.Button (button, css, theme) where
 
-import Html exposing (Html, button, Attribute)
+import BaseUI.Button exposing (button, ButtonTheme)
+import Html exposing (Html, Attribute)
 import Css exposing (..)
 import Css.Elements as Css
 import Html.CssHelpers exposing (namespace)
 
 
 type CssClasses
-  = ButtonDefault
-  | ButtonPrimary
+  = BelleButtonRoot
 
 
 { class, classList, id } =
@@ -18,29 +18,19 @@ type CssClasses
 css =
   (stylesheet)
     [ (.)
-        ButtonDefault
+        BelleButtonRoot
         [ backgroundColor (rgb 100 100 100) ]
-    , (.)
-        ButtonPrimary
-        [ backgroundColor (rgb 240 240 240) ]
     ]
 
 
-belleButton : List Attribute -> List Html -> Html
-belleButton attributes html =
-  let
-    classes = ButtonDefault
-      -- if attributes.primary then
-      --   ButtonPrimary
-      -- else
-      --   ButtonDefault
-    newAttributes =
-      attributes
-      ++
-      [
-        class [ classes ]
-      ]
-  in
-    button
-      newAttributes
-      html
+theme : ButtonTheme
+theme =
+  { root = "BelleButtonRoot" }
+
+
+button : List Attribute -> List Html -> Html
+button attributes html =
+  BaseUI.Button.button
+    attributes
+    html
+    theme

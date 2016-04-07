@@ -2,8 +2,7 @@ module ButtonExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Belle.Button exposing (belleButton)
-import Core.Button exposing (coreButton)
+import Belle.Button exposing (button)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (attribute, property)
 import Signal
@@ -43,26 +42,21 @@ update action previous =
       { previous | count = previous.count - 1 }
 
 
---buttons : List Button.Button
---buttons =
---  [ { content = "+", primary = False, type' = "submit", disabled = False, onClick = Signal.message source.address Increment }
---  , { content = "-", primary = False, type' = "button", disabled = False, onClick = Signal.message source.address Decrement }
---  ]
-
-
 view : State -> Html
 view state =
   div
     []
     [ span [] [ text (toString state.count) ]
-    --, span [] (List.map (\entry -> Button.view entry) buttons)
     , div
       []
-      [ coreButton
-        [ onClick source.address Increment
-        , property "theme" (Json.Encode.object [ ("root", string "my-class") ])
+      [ Belle.Button.button
+        [ onClick source.address Increment ]
+        [ text "Increment" ]
+      , Belle.Button.button
+        [ onClick source.address Decrement
+        , attribute "class" "my-custom-class2" -- this does not work :(
         ]
-        [ text "Yay" ]
+        [ text "Decrement" ]
       ]
     , Util.stylesheetLink "/button-example.css"
     ]
