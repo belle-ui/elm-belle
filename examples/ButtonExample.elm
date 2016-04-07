@@ -25,7 +25,6 @@ type Action
   = NoOp
   | Increment
   | Decrement
-  | Add Int
 
 
 update : Action -> State -> State
@@ -39,9 +38,6 @@ update action previous =
 
     Decrement ->
       { previous | count = previous.count - 1 }
-
-    Add int ->
-      { previous | count = previous.count + int }
 
 
 --buttons : List Button.Button
@@ -57,7 +53,7 @@ single =
   , primary = True
   , type' = "button"
   , disabled = False
-  , onClick = Signal.message source.address (Add 2)
+  , onClick = Signal.message source.address Increment
   , hoverStyle = [ ( "color", "blue", "yellow" ) ]
   , focusStyle = [ ( "color", "blue", "red" ) ]
   }
