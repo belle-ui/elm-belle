@@ -3,11 +3,13 @@ module ButtonExample (..) where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Belle.Button exposing (belleButton)
+import Core.Button exposing (coreButton)
 import Html.Events exposing (onClick)
+import Html.Attributes exposing (attribute, property)
 import Signal
 import StartApp.Simple as StartApp
 import Util
-
+import Json.Encode exposing (string)
 
 type alias State =
   { count : Int }
@@ -56,8 +58,10 @@ view state =
     --, span [] (List.map (\entry -> Button.view entry) buttons)
     , div
       []
-      [ belleButton
-        [ onClick source.address Increment ]
+      [ coreButton
+        [ onClick source.address Increment
+        , property "theme" (Json.Encode.object [ ("root", string "my-class") ])
+        ]
         [ text "Yay" ]
       ]
     , Util.stylesheetLink "/button-example.css"
