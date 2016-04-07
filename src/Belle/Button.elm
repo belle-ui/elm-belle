@@ -19,8 +19,7 @@ css =
   (stylesheet)
     [ (.)
         BelleButtonRoot
-        [ backgroundColor ( rgb 238, 238, 238 )
-        ]
+        []
     ]
 
 
