@@ -21,19 +21,18 @@ css =
   (stylesheet)
     [ (.)
         BelleRatingRoot
-        [
-        ]
+        []
     , (.)
         BelleRatingCharacter
-        [
-        ]
+        []
     ]
 
 
 theme : RatingTheme
 theme =
   { root = "BelleRatingRoot"
-  , character = "BelleRatingCharacter" }
+  , character = "BelleRatingCharacter"
+  }
 
 
 rating : List Attribute -> (number -> Message) -> Html

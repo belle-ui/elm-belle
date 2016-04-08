@@ -9,10 +9,11 @@ import Signal exposing (Signal, Message)
 
 type alias RatingTheme =
   { root : String
-  , character : String }
+  , character : String
+  }
 
 
-onRatingSelect : (Signal.Address a -> (number -> a) -> (number -> Message))
+onRatingSelect : Signal.Address a -> (number -> a) -> (number -> Message)
 onRatingSelect addr msg =
   (\rating -> Signal.message addr (msg rating))
 
@@ -25,12 +26,23 @@ rating attributes action theme =
         ++ [ attribute "class" theme.root
            ]
 
-    characterAttributes = [ attribute "class" theme.character ]
-    characterAttributes1 = [ on "click" (succeed ()) (\_ -> action 1) ] ++ characterAttributes
-    characterAttributes2 = [ on "click" (succeed ()) (\_ -> action 2) ] ++ characterAttributes
-    characterAttributes3 = [ on "click" (succeed ()) (\_ -> action 3) ] ++ characterAttributes
-    characterAttributes4 = [ on "click" (succeed ()) (\_ -> action 4) ] ++ characterAttributes
-    characterAttributes5 = [ on "click" (succeed ()) (\_ -> action 5) ] ++ characterAttributes
+    characterAttributes =
+      [ attribute "class" theme.character ]
+
+    characterAttributes1 =
+      [ on "click" (succeed ()) (\_ -> action 1) ] ++ characterAttributes
+
+    characterAttributes2 =
+      [ on "click" (succeed ()) (\_ -> action 2) ] ++ characterAttributes
+
+    characterAttributes3 =
+      [ on "click" (succeed ()) (\_ -> action 3) ] ++ characterAttributes
+
+    characterAttributes4 =
+      [ on "click" (succeed ()) (\_ -> action 4) ] ++ characterAttributes
+
+    characterAttributes5 =
+      [ on "click" (succeed ()) (\_ -> action 5) ] ++ characterAttributes
   in
     div
       newAttributes
