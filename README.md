@@ -9,6 +9,10 @@
 
 This repository contains 2 libraries. The BaseUI which contains unstyled versions of various component, but option to map apply a theme. The second one is Belle which leverages the BaseUI to create a styles version of all the components. BaseUI can easily be used to create your own styled library, while Belle is useful in case you don't want to apply custom styling and need a well designed components out of the box.
 
+## Discussion and Support
+
+Join the channel #elm-belle after signing into the Elm [Slack organization](https://elmlang.herokuapp.com/)!
+
 # Development
 
 ## Setup
