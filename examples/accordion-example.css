@@ -1,9 +1,0 @@
-.AccordionContentCollapsed {
-    height: 0px;
-    overflow: hidden;
-}
-
-.AccordionContentExpanded {
-    overflow: hidden;
-    background-color: rgb(240, 240, 240);
-}
