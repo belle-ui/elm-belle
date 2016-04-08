@@ -44,4 +44,7 @@ elm reactor -a=localhost
 elm-stuff/packages/rtfeldman/elm-css/1.1.0/elm-css.js Stylesheets.elm
 ```
 
-Visit: `http://localhost:8000/Accordion.elm` in your browser
+Visit on of these pages in your browser:
+
+- [http://localhost:8000/ButtonExample.elm](http://localhost:8000/ButtonExample.elm)
+- [http://localhost:8000/RatingExample.elm](http://localhost:8000/RatingExample.elm)
