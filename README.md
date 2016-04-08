@@ -1,11 +1,11 @@
 # Belle (Elm)
 
-# Available Components
+## Available Components
 
 - Button
 - Rating
 
-# Architecture
+## Architecture
 
 This repository contains 2 libraries. The BaseUI which contains unstyled versions of various component, but option to map apply a theme. The second one is Belle which leverages the BaseUI to create a styles version of all the components. BaseUI can easily be used to create your own styled library, while Belle is useful in case you don't want to apply custom styling and need a well designed components out of the box.
 
@@ -13,15 +13,15 @@ This repository contains 2 libraries. The BaseUI which contains unstyled version
 
 Join the channel #elm-belle after signing into the Elm [Slack organization](https://elmlang.herokuapp.com/)!
 
-# Development
+## Development
 
-## Setup
+### Setup
 
 ```
 elm package install
 ```
 
-## Formatting
+### Formatting
 
 We are using elm-format, read here how to set it up: https://github.com/avh4/elm-format
 
@@ -30,7 +30,7 @@ elm-format src/
 elm-format examples/
 ```
 
-# Run the Examples
+## Run the Examples
 
 ```
 # Go to examples and stay in that directory
