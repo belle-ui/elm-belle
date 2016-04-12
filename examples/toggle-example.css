@@ -1,0 +1,60 @@
+.BelleToggleWrapper {
+    box-sizing: border-box;
+    border-radius: 32px;
+    height: 32px;
+    width: 68px;
+    position: relative;
+    display: inline-block;
+    margin-left: 20px;
+}
+
+.BelleToggleInner {
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 32px;
+}
+
+.BelleToggleValues {
+    box-sizing: border-box;
+    position: relative;
+    width: 104px;
+    left: 0px;
+}
+
+.BelleToggleSlider {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-sizing: border-box;
+    border-radius: 32px;
+    height: 31px;
+    width: 32px;
+    border: 0px solid rgb(220, 220, 220);
+    background-color: rgb(243, 243, 243);
+}
+
+.BelleToggleLeft {
+    display: inline-block;
+    box-sizing: border-box;
+    height: 32px;
+    width: 52px;
+    line-height: 32px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    text-indent: -10px;
+    font-size: 15px;
+    background-color: rgba(43, 206, 56, 0.8);
+}
+
+.BelleToggleRight {
+    display: inline-block;
+    box-sizing: border-box;
+    height: 32px;
+    width: 52px;
+    line-height: 32px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    text-indent: 10px;
+    font-size: 15px;
+    background-color: rgba(43, 206, 56, 0.8);
+}
