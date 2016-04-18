@@ -11,7 +11,7 @@ import Util
 import Json.Encode exposing (string)
 
 type alias Model =
-  { rating : Rating.Rating }
+  { rating : Rating.Model }
 
 
 init : Model
@@ -25,7 +25,8 @@ source =
 
 
 type Action
-  = Rating Rating.Action
+  = NoOp
+  | ChangeRating Int
 
 
 update : Action -> Model -> Model
@@ -35,7 +36,7 @@ update action previous =
       previous
 
     ChangeRating newRating ->
-      Rating.update newRating
+      previous
 
 
 view : Model -> Html

@@ -1,4 +1,4 @@
-module BaseUI.Rating (view, Rating, init, update, Action) where
+module BaseUI.Rating (view, init, update, Action, Model) where
 
 import Html exposing (Html, div, span, text, Attribute)
 import Html.Attributes exposing (attribute)
@@ -43,24 +43,21 @@ initWithConfig value config =
   , config = config }
 
 
-type Rating 
-  = Rating Model
-
 type Action
   = SetValue Int
 
 
-update : Action -> Rating -> Rating
-update action (Rating model) =
+update : Action -> Model -> Model
+update action model =
   case action of 
     SetValue value ->
-      (Rating ({ model | value = value }))
+      { model | value = value }
       
 
-view : (Int -> Signal.Message) -> Rating -> Html
-view address (Rating model) =
+view : (Int -> Signal.Message) -> Model -> Html
+view address model =
   let
-    createStar = (\rating -> viewStar address (Rating model) rating)
+    createStar = (\rating -> viewStar model rating)
     stars = Array.toList (Array.initialize model.config.maxRating createStar)
   in
     div
@@ -68,8 +65,9 @@ view address (Rating model) =
       stars
 
 
-viewStar : (Int -> Signal.Message) -> Rating -> Int -> Html
-viewStar handleClick (Rating model) value = 
+viewStar : Model -> Int -> Html
+viewStar model value = 
   span 
-    [ on "click" Json.value (\_ -> handleClick (SetValue value)) ]
+    [ ]
     [ text "★" ]
+
