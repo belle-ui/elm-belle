@@ -2,7 +2,10 @@ module RatingExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+
+
 --import Belle.Rating exposing (rating)
+
 import BaseUI.Rating as Rating
 import BaseUI.Rating.Config as Config
 import Html.Attributes exposing (attribute, property)
@@ -11,14 +14,15 @@ import StartApp.Simple as StartApp
 import Util
 import Json.Encode exposing (string)
 
+
 type alias Model =
   { rating : Rating.Model }
 
 
 init : Model
-init = 
+init =
   let
-    config = 
+    config =
       Config.defaultConfig
         |> Config.setMaxRating 5
         |> Config.setTheme "myTheme"
@@ -44,7 +48,8 @@ update action previous =
 
     Rating act ->
       let
-        updatedRating = Rating.update act previous.rating
+        updatedRating =
+          Rating.update act previous.rating
       in
         { previous | rating = updatedRating }
 

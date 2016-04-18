@@ -3,7 +3,7 @@ module BaseUI.Rating.Model (Model, init, initWithConfig) where
 import BaseUI.Rating.Config as Config exposing (Config)
 
 
-type alias Model = 
+type alias Model =
   { value : Int
   , config : Config
   }
@@ -16,7 +16,8 @@ init value =
   }
 
 
-initWithConfig: Int -> Config -> Model
+initWithConfig : Int -> Config -> Model
 initWithConfig value config =
-  { value = value 
-  , config = config }
+  { value = value
+  , config = config
+  }

@@ -1,11 +1,15 @@
 module BaseUI.Rating.Config (Config, defaultConfig, setMaxRating, setTheme) where
 
-type alias Config = Model
 
-type alias Model = 
+type alias Config =
+  Model
+
+
+type alias Model =
   { maxRating : Int
   , theme : String
   }
+
 
 setMaxRating : Int -> Config -> Config
 setMaxRating maxRating config =
@@ -20,4 +24,5 @@ setTheme theme config =
 defaultConfig : Config
 defaultConfig =
   { maxRating = 6
-  , theme = "defaultTheme" }
+  , theme = "defaultTheme"
+  }
