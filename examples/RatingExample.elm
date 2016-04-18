@@ -26,7 +26,7 @@ source =
 
 type Action
   = NoOp
-  | ChangeRating Int
+  | ChangeRating Rating.Action
 
 
 update : Action -> Model -> Model
@@ -35,8 +35,8 @@ update action previous =
     NoOp ->
       previous
 
-    ChangeRating newRating ->
-      previous
+    ChangeRating act ->
+      { previous | rating = (Rating.update act previous.rating) }
 
 
 view : Model -> Html
@@ -46,7 +46,7 @@ view state =
     [ span [] [ text (toString state.rating) ]
     , div
         []
-        [ Rating.view (\rating -> Signal.message source.address (ChangeRating rating)) state.rating ]
+        [ Rating.view (Signal.forwardTo source.address ChangeRating) state.rating ]
     , Util.stylesheetLink "/rating-example.css"
     ]
 

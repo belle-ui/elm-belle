@@ -2,7 +2,7 @@ module BaseUI.Rating (view, init, update, Action, Model) where
 
 import Html exposing (Html, div, span, text, Attribute)
 import Html.Attributes exposing (attribute)
-import Html.Events exposing (on)
+import Html.Events exposing (on, onClick)
 import Json.Decode exposing (succeed)
 import Signal exposing (Signal, Message)
 import Array
@@ -54,10 +54,10 @@ update action model =
       { model | value = value }
       
 
-view : (Int -> Signal.Message) -> Model -> Html
+view : Signal.Address Action -> Model -> Html
 view address model =
   let
-    createStar = (\rating -> viewStar model rating)
+    createStar = (\rating -> viewStar address model rating)
     stars = Array.toList (Array.initialize model.config.maxRating createStar)
   in
     div
@@ -65,9 +65,9 @@ view address model =
       stars
 
 
-viewStar : Model -> Int -> Html
-viewStar model value = 
+viewStar : Signal.Address Action -> Model -> Int -> Html
+viewStar address model value = 
   span 
-    [ ]
+    [ onClick address (SetValue value) ]
     [ text "★" ]
 
