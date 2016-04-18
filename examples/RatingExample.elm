@@ -16,7 +16,7 @@ type alias Model =
 
 init : Model
 init = 
-  { rating = Rating.init 1 }
+  { rating = Rating.init 2 }
 
 
 source : Signal.Mailbox Action
@@ -26,7 +26,7 @@ source =
 
 type Action
   = NoOp
-  | ChangeRating Rating.Action
+  | Rating Rating.Action
 
 
 update : Action -> Model -> Model
@@ -35,18 +35,21 @@ update action previous =
     NoOp ->
       previous
 
-    ChangeRating act ->
-      { previous | rating = (Rating.update act previous.rating) }
+    Rating act ->
+      let
+        updatedRating = Rating.update act previous.rating
+      in
+        { previous | rating = updatedRating }
 
 
 view : Model -> Html
-view state =
+view model =
   div
     []
-    [ span [] [ text (toString state.rating) ]
+    [ span [] [ text (toString model.rating) ]
     , div
         []
-        [ Rating.view (Signal.forwardTo source.address ChangeRating) state.rating ]
+        [ Rating.view (Signal.forwardTo source.address Rating) model.rating ]
     , Util.stylesheetLink "/rating-example.css"
     ]
 

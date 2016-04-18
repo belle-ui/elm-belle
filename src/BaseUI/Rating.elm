@@ -8,20 +8,8 @@ import Signal exposing (Signal, Message)
 import Array
 import Json.Decode as Json
 
-type alias Config = 
-  { maxRating : Int
-  , theme : String
-  }
-
-setMaxRating : Int -> Config -> Config
-setMaxRating maxRating config =
-  { config | maxRating = maxRating }
-
-
-defaultConfig : Config
-defaultConfig =
-  { maxRating = 6
-  , theme = "defaultTheme" }
+import BaseUI.Rating.Config as Config exposing (Config)
+import BaseUI.Rating.Model as Model exposing (init)
 
 
 type alias Model = 
@@ -30,17 +18,8 @@ type alias Model =
   }
 
 
-init : Int -> Model
-init value =
-  { value = value
-  , config = defaultConfig
-  }
-
-
-initWithConfig: Int -> Config -> Model
-initWithConfig value config =
-  { value = value 
-  , config = config }
+init = Model.init
+initWithConfig = Model.initWithConfig
 
 
 type Action
@@ -58,7 +37,8 @@ view : Signal.Address Action -> Model -> Html
 view address model =
   let
     createStar = (\rating -> viewStar address model rating)
-    stars = Array.toList (Array.initialize model.config.maxRating createStar)
+    arrayOfStars = Array.initialize model.config.maxRating createStar
+    stars = Array.toList arrayOfStars
   in
     div
       []
