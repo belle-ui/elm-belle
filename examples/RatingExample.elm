@@ -4,6 +4,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 --import Belle.Rating exposing (rating)
 import BaseUI.Rating as Rating
+import BaseUI.Rating.Config as Config
 import Html.Attributes exposing (attribute, property)
 import Signal
 import StartApp.Simple as StartApp
@@ -16,7 +17,13 @@ type alias Model =
 
 init : Model
 init = 
-  { rating = Rating.init 2 }
+  let
+    config = 
+      Config.defaultConfig
+        |> Config.setMaxRating 5
+        |> Config.setTheme "myTheme"
+  in
+    { rating = Rating.initWithConfig 2 config }
 
 
 source : Signal.Mailbox Action
