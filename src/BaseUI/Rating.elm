@@ -1,54 +1,95 @@
-module BaseUI.Rating (rating, onRatingSelect, RatingTheme) where
+module BaseUI.Rating (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxRating) where
 
-import Html exposing (Html, div, span, text, Attribute)
-import Html.Attributes exposing (attribute)
-import Html.Events exposing (on)
-import Json.Decode exposing (succeed)
+import Html exposing (Html, div, span, text)
+import Html.Attributes exposing (classList)
+import Html.Events exposing (on, onClick)
 import Signal exposing (Signal, Message)
+import Array
 
+-- Config
 
-type alias RatingTheme =
-  { root : String
-  , character : String
+type alias Config =
+  { maxRating : Int
+  , theme : String
   }
 
 
-onRatingSelect : Signal.Address a -> (number -> a) -> (number -> Message)
-onRatingSelect addr msg =
-  (\rating -> Signal.message addr (msg rating))
+setMaxRating : Int -> Config -> Config
+setMaxRating maxRating config =
+  { config | maxRating = maxRating }
 
 
-rating : List Attribute -> (number -> Message) -> RatingTheme -> Html
-rating attributes action theme =
+setTheme : String -> Config -> Config
+setTheme theme config =
+  { config | theme = theme }
+
+
+defaultConfig : Config
+defaultConfig =
+  { maxRating = 6
+  , theme = "defaultTheme"
+  }
+
+
+-- Model
+
+type alias Model =
+  { value : Int
+  , config : Config
+  }
+
+
+init : Int -> Model
+init value =
+  { value = value
+  , config = defaultConfig
+  }
+
+
+initWithConfig : Int -> Config -> Model
+initWithConfig value config =
+  { value = value
+  , config = config
+  }
+
+
+-- Update
+
+type Action
+  = SetValue Int
+
+
+update : Action -> Model -> Model
+update action model =
+  case action of
+    SetValue value ->
+      { model | value = value }
+
+
+-- View
+
+view : Signal.Address Action -> Model -> Html
+view address model =
   let
-    newAttributes =
-      attributes
-        ++ [ attribute "class" theme.root
-           ]
+    classes =
+      [ ( "BelleRating", True ) ] ++ [ ( model.config.theme, True ) ]
 
-    characterAttributes =
-      [ attribute "class" theme.character ]
+    createStar =
+      (\rating -> viewStar address model rating)
 
-    characterAttributes1 =
-      [ on "click" (succeed ()) (\_ -> action 1) ] ++ characterAttributes
+    arrayOfStars =
+      Array.initialize model.config.maxRating createStar
 
-    characterAttributes2 =
-      [ on "click" (succeed ()) (\_ -> action 2) ] ++ characterAttributes
-
-    characterAttributes3 =
-      [ on "click" (succeed ()) (\_ -> action 3) ] ++ characterAttributes
-
-    characterAttributes4 =
-      [ on "click" (succeed ()) (\_ -> action 4) ] ++ characterAttributes
-
-    characterAttributes5 =
-      [ on "click" (succeed ()) (\_ -> action 5) ] ++ characterAttributes
+    stars =
+      Array.toList arrayOfStars
   in
     div
-      newAttributes
-      [ span characterAttributes1 [ text "★" ]
-      , span characterAttributes2 [ text "★" ]
-      , span characterAttributes3 [ text "★" ]
-      , span characterAttributes4 [ text "★" ]
-      , span characterAttributes5 [ text "★" ]
-      ]
+      [ classList classes ]
+      stars
+
+
+viewStar : Signal.Address Action -> Model -> Int -> Html
+viewStar address model value =
+  span
+    [ onClick address (SetValue value) ]
+    [ text "★" ]

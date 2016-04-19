@@ -2,8 +2,11 @@ module RatingExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Belle.Rating exposing (rating)
-import BaseUI.Rating exposing (onRatingSelect)
+
+
+--import Belle.Rating exposing (rating)
+
+import BaseUI.Rating as Rating
 import Html.Attributes exposing (attribute, property)
 import Signal
 import StartApp.Simple as StartApp
@@ -11,13 +14,19 @@ import Util
 import Json.Encode exposing (string)
 
 
-type alias State =
-  { rating : Int }
+type alias Model =
+  { rating : Rating.Model }
 
 
-init : State
+init : Model
 init =
-  { rating = 1 }
+  let
+    config =
+      Rating.defaultConfig
+        |> Rating.setMaxRating 5
+        |> Rating.setTheme "myTheme"
+  in
+    { rating = Rating.initWithConfig 2 config }
 
 
 source : Signal.Mailbox Action
@@ -27,27 +36,31 @@ source =
 
 type Action
   = NoOp
-  | ChangeRating Int
+  | Rating Rating.Action
 
 
-update : Action -> State -> State
+update : Action -> Model -> Model
 update action previous =
   case action of
     NoOp ->
       previous
 
-    ChangeRating newRating ->
-      { previous | rating = newRating }
+    Rating act ->
+      let
+        updatedRating =
+          Rating.update act previous.rating
+      in
+        { previous | rating = updatedRating }
 
 
-view : State -> Html
-view state =
+view : Model -> Html
+view model =
   div
     []
-    [ span [] [ text (toString state.rating) ]
+    [ span [] [ text (toString model.rating) ]
     , div
         []
-        [ rating [] (onRatingSelect source.address ChangeRating) ]
+        [ Rating.view (Signal.forwardTo source.address Rating) model.rating ]
     , Util.stylesheetLink "/rating-example.css"
     ]
 
@@ -57,6 +70,6 @@ main =
   Signal.map view state
 
 
-state : Signal State
+state : Signal Model
 state =
   Signal.foldp update init source.signal
