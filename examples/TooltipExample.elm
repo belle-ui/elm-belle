@@ -37,7 +37,7 @@ update action model =
       model
 
     UpdateTooltip act ->
-      model
+      { model | firstTooltip = Tooltip.update act model.firstTooltip}
 
 view : Model -> Html
 view model =
