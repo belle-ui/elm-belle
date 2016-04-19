@@ -7,7 +7,6 @@ import Html.Events exposing (onClick)
 
 -- Config
 
-
 type alias Config =
   { theme : String
   }
