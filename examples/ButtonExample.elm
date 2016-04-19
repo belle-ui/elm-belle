@@ -11,7 +11,9 @@ import Json.Encode exposing (string)
 
 
 type alias Model =
-  { firstButton : Button.Model }
+  { firstButton : Button.Model
+  , counter: Int
+  }
 
 
 init : Model
@@ -21,7 +23,9 @@ init =
       Button.defaultConfig
         |> Button.setTheme "myfirstButtonTheme"
   in
-    { firstButton = Button.initWithConfig (text "Follow Me") config }
+    { firstButton = Button.initWithConfig (text "Follow Me") config
+    , counter = 0
+    }
 
 
 source : Signal.Mailbox Action
@@ -35,14 +39,13 @@ type Action
 
 
 update : Action -> Model -> Model
-update action previous =
+update action model =
   case action of
     NoOp ->
-      previous
+      model
 
     TrackClick act ->
-      previous
-
+      { model | counter = model.counter + 1 }
 
 view : Model -> Html
 view model =
@@ -50,7 +53,11 @@ view model =
     []
     [ div
         []
-        [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton ]
+        [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton
+        , div
+          []
+          [ text ("Counter: " ++ toString model.counter) ]
+        ]
     , Util.stylesheetLink "/rating-example.css"
     ]
 

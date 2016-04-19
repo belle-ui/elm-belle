@@ -2,6 +2,7 @@ module Belle.Button (view, update, Action, Model, init, initWithConfig, defaultC
 
 import Html exposing (Html, Attribute, button)
 import Html.Attributes exposing (classList)
+import Html.Events exposing (onClick)
 
 
 -- Config
@@ -50,6 +51,7 @@ initWithConfig content config =
 
 type Action
   = UpdateContent Html
+  | ClickButton
 
 
 update : Action -> Model -> Model
@@ -57,6 +59,9 @@ update action model =
   case action of
     UpdateContent content ->
       { model | content = content }
+
+    ClickButton ->
+      model
 
 
 -- View
@@ -69,5 +74,6 @@ view address model =
       [ ( "BelleButton", True ) ] ++ [ ( model.config.theme, True ) ]
   in
     button
-      [ classList classes ]
+      [ classList classes
+      , onClick address ClickButton ]
       [ model.content ]
