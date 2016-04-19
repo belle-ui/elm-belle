@@ -6,7 +6,9 @@ import Html.Events exposing (on, onClick)
 import Signal exposing (Signal, Message)
 import Array
 
+
 -- Config
+
 
 type alias Config =
   { maxRating : Int
@@ -31,7 +33,9 @@ defaultConfig =
   }
 
 
+
 -- Model
+
 
 type alias Model =
   { value : Int
@@ -53,7 +57,9 @@ initWithConfig value config =
   }
 
 
+
 -- Update
+
 
 type Action
   = SetValue Int
@@ -66,7 +72,9 @@ update action model =
       { model | value = value }
 
 
+
 -- View
+
 
 view : Signal.Address Action -> Model -> Html
 view address model =
