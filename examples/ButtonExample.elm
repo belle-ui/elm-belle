@@ -12,6 +12,7 @@ import Json.Encode exposing (string)
 
 type alias Model =
   { firstButton : Button.Model
+  , secondButton : Button.Model
   , counter: Int
   }
 
@@ -24,6 +25,7 @@ init =
         |> Button.setTheme "myfirstButtonTheme"
   in
     { firstButton = Button.initWithConfig (text "Follow Me") config
+    , secondButton = Button.init (text "Or follow me here")
     , counter = 0
     }
 
@@ -54,10 +56,12 @@ view model =
     [ div
         []
         [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton
+        , Button.view (Signal.forwardTo source.address TrackClick) model.secondButton
         , div
           []
           [ text ("Counter: " ++ toString model.counter) ]
         ]
+
     , Util.stylesheetLink "/rating-example.css"
     ]
 
