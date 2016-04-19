@@ -28,11 +28,15 @@ source =
 
 type Action
   = NoOp
+  | UpdateTooltip Tooltip.Action
 
 update : Action -> Model -> Model
 update action model =
   case action of
     NoOp ->
+      model
+
+    UpdateTooltip act ->
       model
 
 view : Model -> Html
@@ -41,7 +45,7 @@ view model =
     []
     [ div
         []
-        [ Tooltip.view (Signal.forwardTo source.address NoOp) model.firstTooltip
+        [ Tooltip.view (Signal.forwardTo source.address UpdateTooltip) model.firstTooltip
         ]
 
     , Util.stylesheetLink "/rating-example.css"
