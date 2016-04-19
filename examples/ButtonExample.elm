@@ -2,22 +2,26 @@ module ButtonExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Belle.Button exposing (button)
-import Html.Events exposing (onClick)
+
+import Belle.Button as Button
 import Html.Attributes exposing (attribute, property)
 import Signal
-import StartApp.Simple as StartApp
 import Util
 import Json.Encode exposing (string)
 
 
-type alias State =
-  { count : Int }
+type alias Model =
+  { firstButton : Button.Model }
 
 
-init : State
+init : Model
 init =
-  { count = 1 }
+  let
+    config =
+      Button.defaultConfig
+        |> Button.setTheme "myfirstButtonTheme"
+  in
+    { firstButton = Button.initWithConfig (text "Follow Me") config }
 
 
 source : Signal.Mailbox Action
@@ -27,41 +31,27 @@ source =
 
 type Action
   = NoOp
-  | Increment
-  | Decrement
+  | TrackClick Button.Action
 
 
-update : Action -> State -> State
+update : Action -> Model -> Model
 update action previous =
   case action of
     NoOp ->
       previous
 
-    Increment ->
-      { previous | count = previous.count + 1 }
-
-    Decrement ->
-      { previous | count = previous.count - 1 }
+    TrackClick act ->
+      previous
 
 
-view : State -> Html
-view state =
+view : Model -> Html
+view model =
   div
     []
-    [ span [] [ text (toString state.count) ]
-    , div
+    [ div
         []
-        [ Belle.Button.button
-            [ onClick source.address Increment ]
-            [ text "Increment" ]
-        , Belle.Button.button
-            [ onClick source.address Decrement
-            , attribute "class" "my-custom-class2"
-              -- this does not work :(
-            ]
-            [ text "Decrement" ]
-        ]
-    , Util.stylesheetLink "/button-example.css"
+        [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton ]
+    , Util.stylesheetLink "/rating-example.css"
     ]
 
 
@@ -70,6 +60,6 @@ main =
   Signal.map view state
 
 
-state : Signal State
+state : Signal Model
 state =
   Signal.foldp update init source.signal
