@@ -1,32 +1,60 @@
-module BaseUI.Rating (view, update, Action, Model, init, initWithConfig) where
+module BaseUI.Rating (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxRating) where
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (classList)
 import Html.Events exposing (on, onClick)
 import Signal exposing (Signal, Message)
 import Array
-import BaseUI.Rating.Config as Config exposing (Config)
-import BaseUI.Rating.Model as Model exposing (init)
+
+-- Config
+
+type alias Config =
+  { maxRating : Int
+  , theme : String
+  }
 
 
-{-| Model
--}
+setMaxRating : Int -> Config -> Config
+setMaxRating maxRating config =
+  { config | maxRating = maxRating }
+
+
+setTheme : String -> Config -> Config
+setTheme theme config =
+  { config | theme = theme }
+
+
+defaultConfig : Config
+defaultConfig =
+  { maxRating = 6
+  , theme = "defaultTheme"
+  }
+
+
+-- Model
+
 type alias Model =
   { value : Int
   , config : Config
   }
 
 
-init =
-  Model.init
+init : Int -> Model
+init value =
+  { value = value
+  , config = defaultConfig
+  }
 
 
-initWithConfig =
-  Model.initWithConfig
+initWithConfig : Int -> Config -> Model
+initWithConfig value config =
+  { value = value
+  , config = config
+  }
 
 
-{-| UPDATE
--}
+-- Update
+
 type Action
   = SetValue Int
 
@@ -38,8 +66,8 @@ update action model =
       { model | value = value }
 
 
-{-| VIEW
--}
+-- View
+
 view : Signal.Address Action -> Model -> Html
 view address model =
   let

@@ -7,7 +7,6 @@ import Html.Attributes exposing (..)
 --import Belle.Rating exposing (rating)
 
 import BaseUI.Rating as Rating
-import BaseUI.Rating.Config as Config
 import Html.Attributes exposing (attribute, property)
 import Signal
 import StartApp.Simple as StartApp
@@ -23,9 +22,9 @@ init : Model
 init =
   let
     config =
-      Config.defaultConfig
-        |> Config.setMaxRating 5
-        |> Config.setTheme "myTheme"
+      Rating.defaultConfig
+        |> Rating.setMaxRating 5
+        |> Rating.setTheme "myTheme"
   in
     { rating = Rating.initWithConfig 2 config }
 
