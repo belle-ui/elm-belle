@@ -7,8 +7,6 @@ import Belle.Button as Button
 import Html.Attributes exposing (attribute, property)
 import Signal
 import Util
-import Json.Encode exposing (string)
-
 
 type alias Model =
   { firstButton : Button.Model
@@ -28,7 +26,6 @@ init =
     , secondButton = Button.init (text "Or follow me here")
     , counter = 0
     }
-
 
 source : Signal.Mailbox Action
 source =
