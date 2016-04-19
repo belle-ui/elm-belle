@@ -2,22 +2,32 @@ module ButtonExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Belle.Button exposing (button)
-import Html.Events exposing (onClick)
+
+import Belle.Button as Button
 import Html.Attributes exposing (attribute, property)
 import Signal
-import StartApp.Simple as StartApp
 import Util
 import Json.Encode exposing (string)
 
 
-type alias State =
-  { count : Int }
+type alias Model =
+  { firstButton : Button.Model
+  , secondButton : Button.Model
+  , counter: Int
+  }
 
 
-init : State
+init : Model
 init =
-  { count = 1 }
+  let
+    config =
+      Button.defaultConfig
+        |> Button.setTheme "myfirstButtonTheme"
+  in
+    { firstButton = Button.initWithConfig (text "Follow Me") config
+    , secondButton = Button.init (text "Or follow me here")
+    , counter = 0
+    }
 
 
 source : Signal.Mailbox Action
@@ -27,41 +37,32 @@ source =
 
 type Action
   = NoOp
-  | Increment
-  | Decrement
+  | TrackClick Button.Action
 
 
-update : Action -> State -> State
-update action previous =
+update : Action -> Model -> Model
+update action model =
   case action of
     NoOp ->
-      previous
+      model
 
-    Increment ->
-      { previous | count = previous.count + 1 }
+    TrackClick act ->
+      { model | counter = model.counter + 1 }
 
-    Decrement ->
-      { previous | count = previous.count - 1 }
-
-
-view : State -> Html
-view state =
+view : Model -> Html
+view model =
   div
     []
-    [ span [] [ text (toString state.count) ]
-    , div
+    [ div
         []
-        [ Belle.Button.button
-            [ onClick source.address Increment ]
-            [ text "Increment" ]
-        , Belle.Button.button
-            [ onClick source.address Decrement
-            , attribute "class" "my-custom-class2"
-              -- this does not work :(
-            ]
-            [ text "Decrement" ]
+        [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton
+        , Button.view (Signal.forwardTo source.address TrackClick) model.secondButton
+        , div
+          []
+          [ text ("Counter: " ++ toString model.counter) ]
         ]
-    , Util.stylesheetLink "/button-example.css"
+
+    , Util.stylesheetLink "/rating-example.css"
     ]
 
 
@@ -70,6 +71,6 @@ main =
   Signal.map view state
 
 
-state : Signal State
+state : Signal Model
 state =
   Signal.foldp update init source.signal

@@ -3,13 +3,9 @@ module RatingExample (..) where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
-
---import Belle.Rating exposing (rating)
-
-import BaseUI.Rating as Rating
+import Belle.Rating as Rating
 import Html.Attributes exposing (attribute, property)
 import Signal
-import StartApp.Simple as StartApp
 import Util
 import Json.Encode exposing (string)
 

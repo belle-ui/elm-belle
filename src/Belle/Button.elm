@@ -1,36 +1,79 @@
-module Belle.Button (button, css, theme) where
+module Belle.Button (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme) where
 
-import BaseUI.Button exposing (button, ButtonTheme)
-import Html exposing (Html, Attribute)
-import Css exposing (..)
-import Css.Elements as Css
-import Html.CssHelpers exposing (namespace)
+import Html exposing (Html, Attribute, button)
+import Html.Attributes exposing (classList)
+import Html.Events exposing (onClick)
 
 
-type CssClasses
-  = BelleButtonRoot
+-- Config
 
 
-{ class, classList, id } =
-  Html.CssHelpers.namespace ""
+type alias Config =
+  { theme : String
+  }
 
 
-css =
-  (stylesheet)
-    [ (.)
-        BelleButtonRoot
-        []
-    ]
+setTheme : String -> Config -> Config
+setTheme theme config =
+  { config | theme = theme }
 
 
-theme : ButtonTheme
-theme =
-  { root = "BelleButtonRoot" }
+defaultConfig : Config
+defaultConfig =
+  { theme = "defaultTheme"
+  }
+
+-- Model
 
 
-button : List Attribute -> List Html -> Html
-button attributes html =
-  BaseUI.Button.button
-    attributes
-    html
-    theme
+type alias Model =
+  { config : Config
+  , content : Html
+  }
+
+
+init : Html -> Model
+init content =
+  { config = defaultConfig
+  , content = content
+  }
+
+
+initWithConfig : Html -> Config -> Model
+initWithConfig content config =
+  { config = config
+  , content = content
+  }
+
+
+-- Update
+
+
+type Action
+  = UpdateContent Html
+  | ClickButton
+
+
+update : Action -> Model -> Model
+update action model =
+  case action of
+    UpdateContent content ->
+      { model | content = content }
+
+    ClickButton ->
+      model
+
+
+-- View
+
+
+view : Signal.Address Action -> Model -> Html
+view address model =
+  let
+    classes =
+      [ ( "BelleButton", True ) ] ++ [ ( model.config.theme, True ) ]
+  in
+    button
+      [ classList classes
+      , onClick address ClickButton ]
+      [ model.content ]
