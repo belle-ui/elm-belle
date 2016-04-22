@@ -98,6 +98,7 @@ view address model =
   in
     div
       [ classList classes
+      , onClick address (SetValue model.suggesting)
       , onMouseLeave address (SetSuggestion model.value) ]
       stars
 
@@ -111,7 +112,6 @@ viewStar address model value =
   in
     span
       [ classList classes
-      , onClick address (SetValue value)
       , onMouseOver address (SetSuggestion value)
       , on "touchenter" Json.value (\_ -> Signal.message address (SetValue value)) ]
       [ text "★" ]
