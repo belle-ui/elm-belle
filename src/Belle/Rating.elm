@@ -2,10 +2,10 @@ module Belle.Rating (view, update, Action, Model, init, initWithConfig, defaultC
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (classList)
-import Html.Events exposing (onClick)
+import Html.Events exposing (on, onClick, onMouseOver, onMouseLeave)
 import Signal exposing (Signal, Message)
 import Array
-
+import Json.Decode as Json
 
 -- Config
 
@@ -39,6 +39,7 @@ defaultConfig =
 
 type alias Model =
   { value : Int
+  , suggesting : Int
   , config : Config
   }
 
@@ -46,6 +47,7 @@ type alias Model =
 init : Int -> Model
 init value =
   { value = value
+  , suggesting = value
   , config = defaultConfig
   }
 
@@ -53,9 +55,9 @@ init value =
 initWithConfig : Int -> Config -> Model
 initWithConfig value config =
   { value = value
+  , suggesting = value
   , config = config
   }
-
 
 
 -- Update
@@ -63,6 +65,7 @@ initWithConfig value config =
 
 type Action
   = SetValue Int
+  | SetSuggestion Int
 
 
 update : Action -> Model -> Model
@@ -71,6 +74,8 @@ update action model =
     SetValue value ->
       { model | value = value }
 
+    SetSuggestion value ->
+      { model | suggesting = value }
 
 
 -- View
@@ -92,12 +97,21 @@ view address model =
       Array.toList arrayOfStars
   in
     div
-      [ classList classes ]
+      [ classList classes
+      , onMouseLeave address (SetSuggestion model.value) ]
       stars
 
 
 viewStar : Signal.Address Action -> Model -> Int -> Html
 viewStar address model value =
-  span
-    [ onClick address (SetValue value) ]
-    [ text "★" ]
+  let 
+    classes = 
+      [ ( "BelleRatingValue", True )
+      , ( "BelleRatingHighlight", model.suggesting >= value ) ]
+  in
+    span
+      [ classList classes
+      , onClick address (SetValue value)
+      , onMouseOver address (SetSuggestion value)
+      , on "touchenter" Json.value (\_ -> Signal.message address (SetValue value)) ]
+      [ text "★" ]
