@@ -1,4 +1,4 @@
-module Belle.Rating (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxRating) where
+module Belle.Rating (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxRating, getSuggestion) where
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (classList)
@@ -115,3 +115,18 @@ viewStar address model value =
       , onMouseOver address (SetSuggestion value)
       , on "touchenter" Json.value (\_ -> Signal.message address (SetValue value)) ]
       [ text "★" ]
+
+-- get values
+
+
+getSuggestion : Action -> Int
+getSuggestion action =
+  case action of
+    SetSuggestion value ->
+      value
+
+    SetValue value ->
+      -1
+
+
+
