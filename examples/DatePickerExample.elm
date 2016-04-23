@@ -9,7 +9,7 @@ import Signal
 import Util
 import Json.Encode exposing (string)
 
-import Time exposing (every, second)
+import Time exposing (Time, every, second)
 import Date exposing (year, hour, minute, second, fromTime)
 
 
@@ -23,7 +23,7 @@ init =
     config =
       DatePicker.defaultConfig
   in
-    { datepicker = DatePicker.initWithConfig 2 config }
+    { datepicker = DatePicker.initWithConfig "2015/2/1" config }
 
 
 source : Signal.Mailbox Action
@@ -50,21 +50,21 @@ update action model =
         { model | datepicker = updatedDatepicker }
 
 
-view : Model -> Html
-view model =
+view : Model -> Time -> Html
+view model time =
   div
     []
     [ span [] [ text (toString model.datepicker) ]
     , div
         []
-        [ DatePicker.view (Signal.forwardTo source.address DatePicker) model.datepicker ]
+        [ DatePicker.view (Signal.forwardTo source.address DatePicker) model.datepicker time ]
     , Util.stylesheetLink "/Datepicker-example.css"
     ]
 
 
 main : Signal Html
 main =
-  Signal.map view state
+  Signal.map2 view state DatePicker.defaultTime
 
 
 state : Signal Model
