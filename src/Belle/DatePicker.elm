@@ -105,10 +105,7 @@ view : Signal.Address Action -> Model -> Time -> Html
 view address model time =
   let
     value = validDate model.value (Date.fromTime time)
-
-    day = Debug.log "day" (Date.day value)
-    month = Debug.log "month" (Date.month value)
-    daysInMonth' = Debug.log "daysInMonth" (daysInMonth value)
+    daysInMonth' = daysInMonth value
 
     createDay =
       (\day -> viewDay address value day)
@@ -121,7 +118,7 @@ view address model time =
   in
     div
       [ ]
-      [ text (toString time) 
+      [ text (toString (Date.year value)) 
       , div [] [ viewMonth address value ]
       , div [] days
       ]
@@ -247,11 +244,13 @@ changeDate date change =
           Date.day date
             |> toString
 
-        year = 
-          Date.year date 
-            |> toString
+        monthSafe = getSafeMonth month
+        year =
+          Date.year date
+          |> getSafeYear month
+          |> toString
 
-        dateString = year++"/"++(toString month)++"/"++day
+        dateString = year++"/"++(toString monthSafe)++"/"++day
       in 
         maybeDate dateString
 
@@ -271,3 +270,17 @@ changeDate date change =
         maybeDate dateString
         
 
+getSafeMonth : Int -> Int
+getSafeMonth month =
+  case month of
+    13 -> 1
+    0 -> 12
+    _ -> month
+
+
+getSafeYear : Int -> Int -> Int
+getSafeYear month year =
+  case month of
+    13 -> year+1
+    0 -> year-1
+    _ -> year
