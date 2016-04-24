@@ -23,7 +23,7 @@ init =
     config =
       DatePicker.defaultConfig
   in
-    { datepicker = DatePicker.initWithConfig "2015/2/1" config }
+    { datepicker = DatePicker.initWithConfig "2016/2/1" config }
 
 
 source : Signal.Mailbox Action
