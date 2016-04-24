@@ -217,7 +217,6 @@ monthAsInt month =
 type Changable 
   = Day Int 
   | Month Int 
-  | Year Int
 
 
 changeDate: Date -> Changable -> Maybe Date
@@ -228,47 +227,36 @@ changeDate date change =
         month = 
           Date.month date
             |> monthAsInt
-            |> toString
 
-        year = 
-          Date.year date 
-            |> toString
+        year = Date.year date 
 
-        dateString = year++"/"++month++"/"++(toString day)
       in 
-        maybeDate dateString
+        assembleDate year month day
 
-    Month month ->
+    Month monthRaw ->
       let 
         day = 
           Date.day date
-            |> toString
 
-        monthSafe = getSafeMonth month
+        month = 
+          monthRaw
+            |> getSafeMonth
+
         year =
           Date.year date
-          |> getSafeYear month
-          |> toString
+            |> getSafeYear monthRaw
 
-        dateString = year++"/"++(toString monthSafe)++"/"++day
       in 
-        maybeDate dateString
+        assembleDate year month day
 
-    Year year ->
-      let 
-        day = 
-          Date.day date
-            |> toString
-            
-        month = 
-          Date.month date
-            |> monthAsInt
-            |> toString
 
-        dateString = (toString year)++"/"++month++"/"++day
-      in 
-        maybeDate dateString
-        
+assembleDate : Int -> Int -> Int -> Maybe Date
+assembleDate year month day =
+  let 
+    dateString = (toString year)++"/"++(toString month)++"/"++(toString day)
+  in 
+    maybeDate dateString
+
 
 getSafeMonth : Int -> Int
 getSafeMonth month =
@@ -284,3 +272,4 @@ getSafeYear month year =
     13 -> year+1
     0 -> year-1
     _ -> year
+
