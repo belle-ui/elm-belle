@@ -106,11 +106,12 @@ view address model time =
   let
     value = validDate model.value (Date.fromTime time)
 
-    year = Debug.log "here" (Date.year value)
+    day = Debug.log "day" (Date.day value)
+    month = Debug.log "month" (Date.month value)
     daysInMonth' = Debug.log "daysInMonth" (daysInMonth value)
 
     createDay =
-      (\day -> viewDay address model day)
+      (\day -> viewDay address value day)
 
     arrayOfDays =
       Array.initialize daysInMonth' createDay
@@ -119,26 +120,44 @@ view address model time =
       Array.toList arrayOfDays
   in
     div
-      []
+      [ ]
       [ text (toString time) 
-      , text (toString year)
-      , div 
-        []
-        days
+      , div [] [ viewMonth address value ]
+      , div [] days
       ]
 
-viewDay : Signal.Address Action -> Model -> Int -> Html
-viewDay address model day =
+
+viewMonth : Signal.Address Action -> Date -> Html 
+viewMonth address value =
   let 
+    monthInt = monthAsInt (Date.month value)
+    prevMonth = changeDate value (Month (monthInt-1))
+    nextMonth = changeDate value (Month (monthInt+1))
+  in 
+    div 
+      []
+      [ span [ onClick address (SetValue prevMonth) ] [ text "<" ]
+      , text (toString (Date.month value))
+      , span [ onClick address (SetValue nextMonth) ] [ text ">" ]
+      ]
+
+
+viewDay : Signal.Address Action -> Date -> Int -> Html
+viewDay address value dayRaw =
+  let 
+    day = dayRaw+1
+    date = changeDate value (Day day)
+
     classes = 
-      [ ( "BelleDatePickerDay", True )
-      , ( "BelleDatePickerHighlight", model.suggesting == model.value ) ]
+      [ ( "BelleDatePickerDay", True ) ]
   in
     span
       [ classList classes
-      , onMouseOver address (SetSuggestion model.value)
-      , on "touchenter" Json.value (\_ -> Signal.message address (SetValue model.value)) ]
+      , onClick address (SetValue date)
+      , onMouseOver address (SetSuggestion date)
+      , on "touchenter" Json.value (\_ -> Signal.message address (SetValue date)) ]
       [ text (toString day), text " " ]
+
 
 -- helpers 
 
@@ -196,3 +215,59 @@ monthAsInt month =
     Date.Oct -> 10
     Date.Nov -> 11
     Date.Dec -> 12
+
+
+type Changable 
+  = Day Int 
+  | Month Int 
+  | Year Int
+
+
+changeDate: Date -> Changable -> Maybe Date
+changeDate date change =
+  case change of 
+    Day day ->
+      let 
+        month = 
+          Date.month date
+            |> monthAsInt
+            |> toString
+
+        year = 
+          Date.year date 
+            |> toString
+
+        dateString = year++"/"++month++"/"++(toString day)
+      in 
+        maybeDate dateString
+
+    Month month ->
+      let 
+        day = 
+          Date.day date
+            |> toString
+
+        year = 
+          Date.year date 
+            |> toString
+
+        dateString = year++"/"++(toString month)++"/"++day
+      in 
+        maybeDate dateString
+
+    Year year ->
+      let 
+        day = 
+          Date.day date
+            |> toString
+            
+        month = 
+          Date.month date
+            |> monthAsInt
+            |> toString
+
+        dateString = (toString year)++"/"++month++"/"++day
+      in 
+        maybeDate dateString
+        
+
