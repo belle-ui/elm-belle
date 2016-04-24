@@ -229,7 +229,6 @@ changeDate date change =
             |> monthAsInt
 
         year = Date.year date 
-
       in 
         assembleDate year month day
 
@@ -245,7 +244,6 @@ changeDate date change =
         year =
           Date.year date
             |> getSafeYear monthRaw
-
       in 
         assembleDate year month day
 
