@@ -10,7 +10,7 @@ import Util
 import Json.Encode exposing (string)
 import Graphics.Element exposing (show)
 import Debug
-
+import Task exposing (Task)
 
 type alias Model =
   { textInput : TextInput.Model }
@@ -45,8 +45,8 @@ update action model =
         { model | textInput = updatedTextInput }
 
 
-view : Model -> Int -> Html
-view model height =
+view : Model -> Html
+view model =
   let
     test = Debug.log "height" height
   in 
@@ -55,23 +55,17 @@ view model height =
       [ span [] [ text (toString model.textInput) ]
       , div
           []
-          [ TextInput.view (Signal.forwardTo source.address TextInput) model.textInput height ]
-      , Util.stylesheetLink "/TextInput-example.css"
+          [ TextInput.view (Signal.forwardTo source.address TextInput) model.textInput ]
+      , Util.stylesheetLink "/text-input-example.css"
       ]
 
 
 main : Signal Html
 main =
-  Signal.map2 view state textFieldHeight
+  Signal.map view state
 
 
 state : Signal Model
 state =
   Signal.foldp update init source.signal
-
-
--- ports
-
-
-port textFieldHeight : Signal Int
 

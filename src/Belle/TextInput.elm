@@ -1,4 +1,4 @@
-module Belle.TextInput (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxHeight) where
+module Belle.TextInput (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxHeight, getHeight) where
 
 import Html exposing (Html, div, span, text, textarea)
 import Html.Attributes exposing (classList, id, style)
@@ -7,6 +7,9 @@ import Signal exposing (Signal, Message)
 import Array
 import Json.Decode as Json exposing (..)
 import Debug
+
+import Native.TextInput
+import Task exposing (Task)
 
 -- Config
 
@@ -73,14 +76,19 @@ update : Action -> Model -> Model
 update action model =
   case action of
     SetValue value ->
-      { model | value = value }
+      { model | value = value, height = (getHeight 30) }
+
+
+getHeight : Int -> Int
+getHeight default =
+  Native.TextInput.getHeight default
 
 
 -- View
 
 
-view : Signal.Address Action -> Model -> Int -> Html
-view address model height =
+view : Signal.Address Action -> Model -> Html
+view address model =
   let
     classes =
       [ ( "BelleRating", True ) ] ++ [ ( model.config.theme, True ) ]
@@ -90,10 +98,10 @@ view address model height =
       [ textarea 
           [ id "text-field"
           , on "input" targetValue (\str -> Signal.message address (SetValue str))
-          , style [ ("height", (toString height) ++ "px") ] ]
+          , style [ ("height", (toString model.height) ++ "px") ] ]
           [ text model.value ]
         , div 
-          [ id "text-field-measure" ]
+          [ id "BelleTextInputMeasure" ]
           [ text model.value ]
       ]
 

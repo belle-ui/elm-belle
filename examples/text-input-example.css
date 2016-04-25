@@ -1,0 +1,24 @@
+body * {
+  font-family: "Times New Roman", Times, serif;
+}
+
+#text-field {
+  font-size: 12px;
+  border: 0;
+  border-bottom: 2px solid #00BCD4;
+  outline: 0;
+  min-height: 14px;
+  padding: 0;
+  overflow: hidden;
+}
+
+#BelleTextInputMeasure {
+  width: 136px;
+  height: auto;
+  overflow-wrap: break-word;
+  font-size: 12px;
+  position: absolute;
+  top: -999999px;
+  left: -99999px;
+  opacity: 0;
+}
