@@ -11,7 +11,8 @@ import Json.Encode exposing (string)
 
 
 type alias Model =
-  { rating : Rating.Model }
+  { rating : Rating.Model
+  , comment : String }
 
 
 init : Model
@@ -22,7 +23,8 @@ init =
         |> Rating.setMaxRating 5
         |> Rating.setTheme "myTheme"
   in
-    { rating = Rating.initWithConfig 2 config }
+    { rating = Rating.initWithConfig 2 config
+    , comment = "no comment" }
 
 
 source : Signal.Mailbox Action
@@ -36,17 +38,20 @@ type Action
 
 
 update : Action -> Model -> Model
-update action previous =
+update action model =
   case action of
     NoOp ->
-      previous
+      model
 
     Rating act ->
       let
         updatedRating =
-          Rating.update act previous.rating
+          Rating.update act model.rating
+
+        updatedComment =
+          if (Rating.getSuggestion act) > 1 then "good!" else "sucks..."
       in
-        { previous | rating = updatedRating }
+        { model | rating = updatedRating, comment = updatedComment }
 
 
 view : Model -> Html
@@ -57,6 +62,7 @@ view model =
     , div
         []
         [ Rating.view (Signal.forwardTo source.address Rating) model.rating ]
+    , text model.comment
     , Util.stylesheetLink "/rating-example.css"
     ]
 
