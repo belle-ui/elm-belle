@@ -13,7 +13,7 @@ body * {
 }
 
 #BelleTextInputMeasure {
-  width: 136px;
+  max-width: 136px;
   height: auto;
   overflow-wrap: break-word;
   font-size: 12px;
