@@ -59,7 +59,7 @@ view model time =
     , div
         []
         [ DatePicker.view (Signal.forwardTo source.address DatePicker) model.datepicker time ]
-    , Util.stylesheetLink "/Datepicker-example.css"
+    , Util.stylesheetLink "/datepicker-example.css"
     ]
 
 

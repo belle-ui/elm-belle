@@ -1,0 +1,10 @@
+.BelleDatePicker {
+	width: 300px;
+}
+
+.BelleDatePickerDayClass,
+.BelleDatePickerDay {
+	width: 14.28%;
+	text-align: center;
+	display: inline-block;
+}

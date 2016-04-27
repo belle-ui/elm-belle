@@ -6,7 +6,7 @@ module Belle.DatePicker
     ) where
 
 import Html exposing (Html, div, span, text)
-import Html.Attributes exposing (classList)
+import Html.Attributes exposing (classList, class)
 import Html.Events exposing (on, onClick, onMouseOver, onMouseLeave)
 import Signal exposing (Signal, Message)
 import Array
@@ -111,9 +111,13 @@ view address model time =
       validDate time model.suggesting
 
     days = createDays address suggestion time
+
+    classes = 
+      [ ( "BelleDatePicker", True ) ]
+
   in
     div
-      [ ]
+      [ classList classes ]
       [ text (toString (Date.year suggestion)) 
       , div [] [ viewMonth address suggestion ]
       , div [] viewWeekDays
@@ -134,7 +138,7 @@ viewMonth address date =
       changeDate date (Month (monthInt+1))
   in 
     div 
-      []
+      [ ]
       [ span [ onClick address (SetSuggestion prevMonth) ] [ text "<" ]
       , text (toString (Date.month date))
       , span [ onClick address (SetSuggestion nextMonth) ] [ text ">" ]
@@ -143,13 +147,13 @@ viewMonth address date =
 
 viewWeekDays : List Html 
 viewWeekDays =
-  [ span [] [ text "Mo " ]
-  , span [] [ text "Tu " ]
-  , span [] [ text "We " ]
-  , span [] [ text "Th " ]
-  , span [] [ text "Fr " ]
-  , span [] [ text "Sa " ]
-  , span [] [ text "Su " ]
+  [ div [ class "BelleDatePickerDayClass" ] [ text "Mo" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Tu" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "We" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Th" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Fr" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Sa" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Su" ]
   ]
 
 
@@ -215,12 +219,12 @@ viewDay address value dayRaw time =
       --, ( "BelleDatePickerDayHighlight", date == value )
       ]
   in
-    span
+    div
       [ classList classes
       , onClick address (SetValue date)
       , onMouseOver address (SetSuggestion date)
       , on "touchenter" Json.value (\_ -> Signal.message address (SetValue date)) ]
-      [ text (toString day), text " " ]
+      [ text (toString day) ]
 
 
 -- helpers 
