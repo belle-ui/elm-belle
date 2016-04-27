@@ -92,7 +92,7 @@ update : Action -> Model -> Model
 update action model =
   case action of
     SetValue value ->
-      { model | value = value }
+      { model | value = value, suggesting = value }
 
     SetSuggestion value ->
       { model | suggesting = value }
@@ -187,26 +187,26 @@ createDays address date time =
       |> dayAsInt
 
     postfix = 
-      35 - daysInMonth' - prefix
+      42 - daysInMonth' - prefix
 
     createDay =
-      (\from value day -> viewDay address value (from+day) time)
+      (\from value disabled day -> viewDay address value (from+day) time disabled)
 
     prefixDays =
-      Array.initialize prefix (createDay (daysInPrevMonth-prefix) prevMonth)
+      Array.initialize prefix (createDay (daysInPrevMonth-prefix) prevMonth True)
 
     days =
-      Array.initialize daysInMonth' (createDay 0 date)
+      Array.initialize daysInMonth' (createDay 0 date False)
 
     postfixDays =
-      Array.initialize postfix (createDay 0 nextMonth)
+      Array.initialize postfix (createDay 0 nextMonth True)
   in
     Array.toList prefixDays
     ++ Array.toList days
     ++ Array.toList postfixDays
 
-viewDay : Signal.Address Action -> Date -> Int -> Time -> Html
-viewDay address value dayRaw time =
+viewDay : Signal.Address Action -> Date -> Int -> Time -> Bool -> Html
+viewDay address value dayRaw time disabled =
   let 
     day = 
       dayRaw+1
@@ -218,12 +218,14 @@ viewDay address value dayRaw time =
       [ ( "BelleDatePickerDay", True )
       --, ( "BelleDatePickerDayHighlight", date == value )
       ]
+
+    attr = 
+      [ classList classes
+      , onClick address (SetValue date) ]
+
   in
     div
-      [ classList classes
-      , onClick address (SetValue date)
-      , onMouseOver address (SetSuggestion date)
-      , on "touchenter" Json.value (\_ -> Signal.message address (SetValue date)) ]
+      attr
       [ text (toString day) ]
 
 
