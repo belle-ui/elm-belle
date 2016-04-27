@@ -7,6 +7,7 @@ import Signal exposing (Signal, Message)
 import Array
 import Json.Decode as Json
 
+
 -- Config
 
 
@@ -60,6 +61,7 @@ initWithConfig value config =
   }
 
 
+
 -- Update
 
 
@@ -76,6 +78,7 @@ update action model =
 
     SetSuggestion value ->
       { model | suggesting = value }
+
 
 
 -- View
@@ -99,22 +102,27 @@ view address model =
     div
       [ classList classes
       , onClick address (SetValue model.suggesting)
-      , onMouseLeave address (SetSuggestion model.value) ]
+      , onMouseLeave address (SetSuggestion model.value)
+      ]
       stars
 
 
 viewStar : Signal.Address Action -> Model -> Int -> Html
 viewStar address model value =
-  let 
-    classes = 
+  let
+    classes =
       [ ( "BelleRatingValue", True )
-      , ( "BelleRatingHighlight", model.suggesting >= value ) ]
+      , ( "BelleRatingHighlight", model.suggesting >= value )
+      ]
   in
     span
       [ classList classes
       , onMouseOver address (SetSuggestion value)
-      , on "touchenter" Json.value (\_ -> Signal.message address (SetValue value)) ]
+      , on "touchenter" Json.value (\_ -> Signal.message address (SetValue value))
+      ]
       [ text "★" ]
+
+
 
 -- get values
 
@@ -127,6 +135,3 @@ getSuggestion action =
 
     SetValue value ->
       -1
-
-
-

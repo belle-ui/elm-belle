@@ -7,6 +7,7 @@ import Html.Events exposing (onClick)
 
 -- Config
 
+
 type alias Config =
   { theme : String
   }
@@ -21,6 +22,8 @@ defaultConfig : Config
 defaultConfig =
   { theme = "defaultTheme"
   }
+
+
 
 -- Model
 
@@ -45,6 +48,7 @@ initWithConfig content config =
   }
 
 
+
 -- Update
 
 
@@ -63,6 +67,7 @@ update action model =
       model
 
 
+
 -- View
 
 
@@ -74,5 +79,6 @@ view address model =
   in
     button
       [ classList classes
-      , onClick address ClickButton ]
+      , onClick address ClickButton
+      ]
       [ model.content ]

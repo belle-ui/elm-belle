@@ -8,6 +8,7 @@ import Array
 import Json.Decode as Json exposing (..)
 import Debug
 
+
 -- Config
 
 
@@ -76,6 +77,7 @@ update action model =
       { model | value = value }
 
 
+
 -- View
 
 
@@ -87,13 +89,13 @@ view address model height =
   in
     div
       [ classList classes ]
-      [ textarea 
+      [ textarea
           [ id "text-field"
           , on "input" targetValue (\str -> Signal.message address (SetValue str))
-          , style [ ("height", (toString height) ++ "px") ] ]
+          , style [ ( "height", (toString height) ++ "px" ) ]
+          ]
           [ text model.value ]
-        , div 
+      , div
           [ id "text-field-measure" ]
           [ text model.value ]
       ]
-
