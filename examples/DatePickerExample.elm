@@ -10,7 +10,7 @@ import Util
 import Json.Encode exposing (string)
 
 import Time exposing (Time, every, second)
-import Date exposing (year, hour, minute, second, fromTime)
+import Date exposing (Date, year, hour, minute, second, fromTime, month, day)
 
 
 type alias Model =
@@ -54,7 +54,8 @@ view : Model -> Time -> Html
 view model time =
   div
     []
-    [ span [] [ text (toString model.datepicker) ]
+    [ div [] [ text (maybeToString model.datepicker.value) ]
+    , div [] [ text (maybeToString model.datepicker.suggesting) ]
     , div
         []
         [ DatePicker.view (Signal.forwardTo source.address DatePicker) model.datepicker time ]
@@ -71,3 +72,14 @@ state : Signal Model
 state =
   Signal.foldp update init source.signal
 
+
+-- helpers
+
+maybeToString : Maybe Date -> String
+maybeToString date =
+  case date of
+    Just date ->
+      (toString (year date))++(toString (month date))++(toString (day date))
+
+    Nothing ->
+      "default date"

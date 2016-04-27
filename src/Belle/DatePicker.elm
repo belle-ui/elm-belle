@@ -105,38 +105,69 @@ view : Signal.Address Action -> Model -> Time -> Html
 view address model time =
   let
     value = validDate model.value (Date.fromTime time)
-    daysInMonth' = daysInMonth value
+    suggestion = validDate model.suggesting (Date.fromTime time)
 
-    createDay =
-      (\day -> viewDay address value day)
-
-    arrayOfDays =
-      Array.initialize daysInMonth' createDay
-
-    days =
-      Array.toList arrayOfDays
+    days = createDays address suggestion
   in
     div
       [ ]
-      [ text (toString (Date.year value)) 
-      , div [] [ viewMonth address value ]
+      [ text (toString (Date.year suggestion)) 
+      , div [] [ viewMonth address suggestion ]
+      , div [] viewWeekDays
       , div [] days
       ]
 
 
 viewMonth : Signal.Address Action -> Date -> Html 
-viewMonth address value =
+viewMonth address date =
   let 
-    monthInt = monthAsInt (Date.month value)
-    prevMonth = changeDate value (Month (monthInt-1))
-    nextMonth = changeDate value (Month (monthInt+1))
+    monthInt = monthAsInt (Date.month date)
+    prevMonth = changeDate date (Month (monthInt-1))
+    nextMonth = changeDate date (Month (monthInt+1))
   in 
     div 
       []
-      [ span [ onClick address (SetValue prevMonth) ] [ text "<" ]
-      , text (toString (Date.month value))
-      , span [ onClick address (SetValue nextMonth) ] [ text ">" ]
+      [ span [ onClick address (SetSuggestion prevMonth) ] [ text "<" ]
+      , text (toString (Date.month date))
+      , span [ onClick address (SetSuggestion nextMonth) ] [ text ">" ]
       ]
+
+
+viewWeekDays : List Html 
+viewWeekDays =
+  [ span [] [ text "Mo " ]
+  , span [] [ text "Tu " ]
+  , span [] [ text "We " ]
+  , span [] [ text "Th " ]
+  , span [] [ text "Fr " ]
+  , span [] [ text "Sa " ]
+  , span [] [ text "Su " ]
+  ]
+
+
+createDays : Signal.Address Action -> Date.Date -> List Html
+createDays address date = 
+  let
+    monthInt = monthAsInt (Date.month date)
+    prevMonth = changeDate date (Month (monthInt-1))
+    nextMonth = changeDate date (Month (monthInt+1))
+
+    daysInMonth' = daysInMonth date
+    --daysInPrevMonth = daysInMonth prevMonth
+    --daysInNextMonth = daysInMonth nextMonth
+
+    day = Date.day date
+    dayOfWeek' = dayAsInt (Date.dayOfWeek date)
+    prefixDays = (day%7)+dayOfWeek'
+    postfixDays = 35 - postfixDays + daysInMonth'
+
+    createDay =
+      (\day -> viewDay address date day)
+
+    days =
+      Array.initialize daysInMonth' createDay 
+  in
+    Array.toList days
 
 
 viewDay : Signal.Address Action -> Date -> Int -> Html
@@ -212,6 +243,18 @@ monthAsInt month =
     Date.Oct -> 10
     Date.Nov -> 11
     Date.Dec -> 12
+
+
+dayAsInt: Date.Day -> Int 
+dayAsInt day =
+  case day of
+    Date.Mon -> 0
+    Date.Tue -> 1
+    Date.Wed -> 2
+    Date.Thu -> 3
+    Date.Fri -> 4
+    Date.Sat -> 5
+    Date.Sun -> 6
 
 
 type Changable 
