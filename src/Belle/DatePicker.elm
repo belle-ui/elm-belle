@@ -104,10 +104,13 @@ update action model =
 view : Signal.Address Action -> Model -> Time -> Html
 view address model time =
   let
-    value = validDate model.value (Date.fromTime time)
-    suggestion = validDate model.suggesting (Date.fromTime time)
+    value = 
+      validDate time model.value 
 
-    days = createDays address suggestion
+    suggestion = 
+      validDate time model.suggesting
+
+    days = createDays address suggestion time
   in
     div
       [ ]
@@ -121,9 +124,14 @@ view address model time =
 viewMonth : Signal.Address Action -> Date -> Html 
 viewMonth address date =
   let 
-    monthInt = monthAsInt (Date.month date)
-    prevMonth = changeDate date (Month (monthInt-1))
-    nextMonth = changeDate date (Month (monthInt+1))
+    monthInt = 
+      monthAsInt (Date.month date)
+
+    prevMonth = 
+      changeDate date (Month (monthInt-1))
+    
+    nextMonth = 
+      changeDate date (Month (monthInt+1))
   in 
     div 
       []
@@ -145,39 +153,67 @@ viewWeekDays =
   ]
 
 
-createDays : Signal.Address Action -> Date.Date -> List Html
-createDays address date = 
+createDays : Signal.Address Action -> Date.Date -> Time -> List Html
+createDays address date time = 
   let
-    monthInt = monthAsInt (Date.month date)
-    prevMonth = changeDate date (Month (monthInt-1))
-    nextMonth = changeDate date (Month (monthInt+1))
+    monthInt = 
+      monthAsInt (Date.month date)
 
-    daysInMonth' = daysInMonth date
-    --daysInPrevMonth = daysInMonth prevMonth
-    --daysInNextMonth = daysInMonth nextMonth
+    prevMonth = 
+      changeDate date (Month (monthInt-1))
+      |> validDate time
 
-    day = Date.day date
-    dayOfWeek' = dayAsInt (Date.dayOfWeek date)
-    prefixDays = (day%7)+dayOfWeek'
-    postfixDays = 35 - postfixDays + daysInMonth'
+    nextMonth = 
+      changeDate date (Month (monthInt+1))
+      |> validDate time
+
+    daysInMonth' = 
+      daysInMonth date
+
+    daysInPrevMonth = 
+      daysInMonth prevMonth
+
+    day = 
+      Date.day date
+
+    prefix = 
+      changeDate date (Day 1)
+      |> validDate time
+      |> Date.dayOfWeek
+      |> dayAsInt
+
+    postfix = 
+      35 - daysInMonth' - prefix
 
     createDay =
-      (\day -> viewDay address date day)
+      (\from value day -> viewDay address value (from+day) time)
+
+    prefixDays =
+      Array.initialize prefix (createDay (daysInPrevMonth-prefix) prevMonth)
 
     days =
-      Array.initialize daysInMonth' createDay 
+      Array.initialize daysInMonth' (createDay 0 date)
+
+    postfixDays =
+      Array.initialize postfix (createDay 0 nextMonth)
   in
-    Array.toList days
+    Array.toList prefixDays
+    ++ Array.toList days
+    ++ Array.toList postfixDays
 
-
-viewDay : Signal.Address Action -> Date -> Int -> Html
-viewDay address value dayRaw =
+viewDay : Signal.Address Action -> Date -> Int -> Time -> Html
+viewDay address value dayRaw time =
   let 
-    day = dayRaw+1
-    date = changeDate value (Day day)
+    day = 
+      dayRaw+1
+
+    date = 
+      changeDate value (Day day)
 
     classes = 
-      [ ( "BelleDatePickerDay", True ) ]
+      [ ( "BelleDatePickerDay", True )
+      --, ( "BelleDatePickerDayHighlight", date == value )
+      ]
   in
     span
       [ classList classes
@@ -195,14 +231,14 @@ maybeDate string =
   Result.toMaybe (Date.fromString string)
 
 
-validDate : Maybe Date -> Date -> Date
-validDate value default =
+validDate : Time -> Maybe Date -> Date
+validDate default value =
   case value of
     Just date ->
       date 
 
     Nothing ->
-      default
+      (Date.fromTime default)
 
 
 daysInMonth : Date -> Int
