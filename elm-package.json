@@ -6,7 +6,11 @@
     "source-directories": [
         "src"
     ],
-    "exposed-modules": [],
+    "exposed-modules": [
+        "Belle.DatePicker",
+        "Belle.DatePicker.Config",
+        "Belle.DatePicker.Model"
+    ],
     "native-modules": true,
     "dependencies": {
         "elm-lang/core": "3.0.0 <= v < 4.0.0",

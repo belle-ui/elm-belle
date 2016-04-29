@@ -3,6 +3,8 @@ module DatepickerExample (..) where
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
+import Belle.DatePicker.Config as Config
+import Belle.DatePicker.Model as Model
 import Belle.DatePicker as DatePicker
 import Html.Attributes exposing (attribute, property)
 import Signal
@@ -14,16 +16,16 @@ import Date exposing (Date, year, hour, minute, second, fromTime, month, day)
 
 
 type alias Model =
-  { datepicker : DatePicker.Model }
+  { datepicker : Model.Model }
 
 
 init : Model
 init =
   let
     config =
-      DatePicker.defaultConfig
+      Config.defaultConfig
   in
-    { datepicker = DatePicker.initWithConfig "2016/4/1" config }
+    { datepicker = Model.initWithConfig "2016/4/1" config }
 
 
 source : Signal.Mailbox Action
@@ -65,7 +67,7 @@ view model time =
 
 main : Signal Html
 main =
-  Signal.map2 view state DatePicker.defaultTime
+  Signal.map2 view state Config.defaultTime
 
 
 state : Signal Model

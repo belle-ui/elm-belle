@@ -1,4 +1,4 @@
-module Belle.DatePicker (Config, defaultConfig, setMinDate, setMaxDate, setTheme, defaultTime, Model, init, initWithConfig, Action, update, view) where
+module Belle.DatePicker (Action, update, view) where
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (classList, class)
@@ -11,70 +11,8 @@ import Date exposing (Date, Month)
 import Debug
 
 
--- Config
-
-
-type alias Config =
-  { minDate : Maybe Date
-  , maxDate : Maybe Date
-  , theme : String
-  }
-
-
-setMinDate : String -> Config -> Config
-setMinDate minDate config =
-  { config | minDate = maybeDate minDate }
-
-
-setMaxDate : String -> Config -> Config
-setMaxDate maxDate config =
-  { config | maxDate = maybeDate maxDate }
-
-
-setTheme : String -> Config -> Config
-setTheme theme config =
-  { config | theme = theme }
-
-
-defaultConfig : Config
-defaultConfig =
-  { minDate = maybeDate "2015/1/1"
-  , maxDate = maybeDate "2017/1/1"
-  , theme = "defaultTheme"
-  }
-
-
-defaultTime : Signal Time
-defaultTime =
-  Time.every Time.hour
-
-
-
--- Model
-
-
-type alias Model =
-  { value : Maybe Date
-  , suggesting : Maybe Date
-  , config : Config
-  }
-
-
-init : String -> Model
-init value =
-  { value = maybeDate value
-  , suggesting = maybeDate value
-  , config = defaultConfig
-  }
-
-
-initWithConfig : String -> Config -> Model
-initWithConfig value config =
-  { value = maybeDate value
-  , suggesting = maybeDate value
-  , config = config
-  }
-
+import Belle.DatePicker.Config exposing (Config)
+import Belle.DatePicker.Model exposing (Model)
 
 
 -- Update
