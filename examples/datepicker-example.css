@@ -8,3 +8,7 @@
 	text-align: center;
 	display: inline-block;
 }
+
+.BelleDatePickerDayHighlight {
+	font-weight: bold;
+}

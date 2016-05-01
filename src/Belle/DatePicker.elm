@@ -41,14 +41,14 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view address model =
   let
-    picked = 
+    choosen = 
       model.value
 
     suggestion =
       model.suggesting
 
     days =
-      createDays address suggestion
+      createDays address suggestion choosen
 
     classes =
       [ ( "BelleDatePicker", True ) ]
@@ -94,8 +94,8 @@ viewWeekDays =
   ]
 
 
-createDays : Signal.Address Action -> DateTuple -> List Html
-createDays address (day, month, year) =
+createDays : Signal.Address Action -> DateTuple -> DateTuple -> List Html
+createDays address (day, month, year) choosen =
   let
     date =
       (day, month, year)
@@ -123,7 +123,7 @@ createDays address (day, month, year) =
       42 - daysInMonth' - prefix
 
     createDay =
-      (\(init, month, year) day -> viewDay address (init+day, month, year))
+      (\(init, month, year) day -> viewDay address (init+day, month, year) choosen)
 
     prefixDays =
       Array.initialize prefix (createDay prefixDate)
@@ -139,15 +139,15 @@ createDays address (day, month, year) =
       ++ Array.toList postfixDays
 
 
-viewDay : Signal.Address Action -> DateTuple -> Html
-viewDay address (day, month, year) =
+viewDay : Signal.Address Action -> DateTuple -> DateTuple -> Html
+viewDay address (day, month, year) (choosenDay, changeMonth, _) =
   let
     date =
       (day, month, year)
 
     classes =
       [ ( "BelleDatePickerDay", True )
-        --, ( "BelleDatePickerDayHighlight", date == value )
+      , ( "BelleDatePickerDayHighlight", day == choosenDay && month == changeMonth )
       ]
 
     attr =
