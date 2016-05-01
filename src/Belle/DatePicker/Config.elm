@@ -2,8 +2,6 @@ module Belle.DatePicker.Config (Config, DateTuple, setMinDate, setMaxDate, setTh
 
 import Date exposing (Date)
 import Time exposing (Time, every, hour)
-import Belle.DatePicker.Helpers exposing (maybeDate)
-
 
 type alias DateTuple = (Int, Int, Int)
 

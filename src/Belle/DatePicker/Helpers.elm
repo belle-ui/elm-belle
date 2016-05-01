@@ -1,20 +1,17 @@
-module Belle.DatePicker.Helpers (maybeDate, validDate, daysInMonth, getLeapDay, validateYear, validateMonth, dayOfWeek, changeDay, changeMonth, getDay, getMonth, getYear, validateDate) where
+module Belle.DatePicker.Helpers 
+  ( daysInMonth
+  , dayOfWeek
+  , changeDay
+  , changeMonth
+  , getYear
+  , validateDate
+  ) where
 
 
 import Date exposing (..)
 import Time exposing (..)
 import String exposing (..)
 import Debug
-
-
-getDay : (Int, Int, Int) -> Int 
-getDay (day, month, year) =
-  day
-
-
-getMonth : (Int, Int, Int) -> Int 
-getMonth (day, month, year) =
-  month
 
 
 getYear : (Int, Int, Int) -> Int 
@@ -38,30 +35,6 @@ validateDate (day, month, year) =
         (1, 1, 1970)
 
 
-assembleDate : (Int, Int, Int) -> Maybe Date
-assembleDate (year, month, day) =
-  let
-    dateString =
-      (toString year) ++ "/" ++ (toString month) ++ "/" ++ (toString day)
-  in
-    maybeDate dateString
-
-
-maybeDate : String -> Maybe Date
-maybeDate string =
-  Result.toMaybe (Date.fromString string)
-
-
-validDate : Time -> Maybe Date -> Date
-validDate default value =
-  case value of
-    Just date ->
-      date
-
-    Nothing ->
-      (Date.fromTime default)
-
-
 daysInMonth : (Int, Int, Int) -> Int
 daysInMonth (_, month, year) =
   let
@@ -77,17 +50,8 @@ daysInMonth (_, month, year) =
 getLeapDay : Int -> Int
 getLeapDay year =
   let
-    reminder4 =
-      year % 4
-
-    reminder100 =
-      year % 100
-
-    reminder400 =
-      year % 400
-
     isLeapYear =
-      reminder4 > 0 || reminder100 == 0 && reminder400 > 0
+      year%4 > 0 || year%100 == 0 && year%400 > 0
   in
     if isLeapYear then
       0
@@ -114,31 +78,22 @@ changeMonth (day, month, year) newMonth =
 
 validateMonth : Int -> Int
 validateMonth month =
-  let 
-    overflow = 
-      if month > 12 then month-12 else 0
-    
-    underflow = 
-      if month < 1 then 12+month else 0
-    
-    result = 
-      overflow + underflow
-  in 
-    if result > 0 then result else month
+  if month > 12 then
+    month - 12
+  else if month < 1 then
+    12 + month
+  else 
+    month
 
 
 validateYear : Int -> Int -> Int
 validateYear month year =
-  let 
-    overflow = 
-      if month > 12 then year+1 else 0
-    
-    underflow = 
-      if month < 1 then year-1 else 0
-    
-    result = overflow + underflow
-  in 
-    if result > 0 then result else year
+  if month > 12 then
+    year+1
+  else if month < 1 then
+    year-1
+  else 
+    year
 
 
 dayOfWeek : (Int, Int, Int) -> Int -- Zeller's Rule

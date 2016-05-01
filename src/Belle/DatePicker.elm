@@ -82,18 +82,6 @@ viewMonth address (day, month, year) =
       ]
 
 
-viewWeekDays : List Html
-viewWeekDays =
-  [ div [ class "BelleDatePickerDayClass" ] [ text "Mo" ]
-  , div [ class "BelleDatePickerDayClass" ] [ text "Tu" ]
-  , div [ class "BelleDatePickerDayClass" ] [ text "We" ]
-  , div [ class "BelleDatePickerDayClass" ] [ text "Th" ]
-  , div [ class "BelleDatePickerDayClass" ] [ text "Fr" ]
-  , div [ class "BelleDatePickerDayClass" ] [ text "Sa" ]
-  , div [ class "BelleDatePickerDayClass" ] [ text "Su" ]
-  ]
-
-
 createDays : Signal.Address Action -> DateTuple -> DateTuple -> List Html
 createDays address (day, month, year) choosen =
   let
@@ -160,3 +148,13 @@ viewDay address (day, month, year) (choosenDay, changeMonth, _) =
       [ text (toString day) ]
 
 
+viewWeekDays : List Html
+viewWeekDays =
+  [ div [ class "BelleDatePickerDayClass" ] [ text "Mo" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Tu" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "We" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Th" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Fr" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Sa" ]
+  , div [ class "BelleDatePickerDayClass" ] [ text "Su" ]
+  ]
