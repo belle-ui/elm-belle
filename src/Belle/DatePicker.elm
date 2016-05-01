@@ -128,14 +128,17 @@ createDays address (day, month, year) choosen =
 
 
 viewDay : Signal.Address Action -> DateTuple -> DateTuple -> Html
-viewDay address (day, month, year) (choosenDay, changeMonth, _) =
+viewDay address (day, month, year) (choosenDay, changeMonth, choosenYear) =
   let
     date =
       (day, month, year)
 
+    highlight =
+      day == choosenDay && month == changeMonth && year == choosenYear
+
     classes =
       [ ( "BelleDatePickerDay", True )
-      , ( "BelleDatePickerDayHighlight", day == choosenDay && month == changeMonth )
+      , ( "BelleDatePickerDayHighlight", highlight )
       ]
 
     attr =
