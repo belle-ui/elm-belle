@@ -4,6 +4,7 @@ import Date exposing (Date)
 import Belle.DatePicker.Config exposing (Config, DateTuple, defaultConfig)
 import Belle.DatePicker.Helpers exposing (validateDate)
 
+
 type alias Model =
   { value : DateTuple
   , suggesting : DateTuple

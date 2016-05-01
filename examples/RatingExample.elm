@@ -2,7 +2,6 @@ module RatingExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-
 import Belle.Rating as Rating
 import Html.Attributes exposing (attribute, property)
 import Signal
@@ -12,7 +11,8 @@ import Json.Encode exposing (string)
 
 type alias Model =
   { rating : Rating.Model
-  , comment : String }
+  , comment : String
+  }
 
 
 init : Model
@@ -24,7 +24,8 @@ init =
         |> Rating.setTheme "myTheme"
   in
     { rating = Rating.initWithConfig 2 config
-    , comment = "no comment" }
+    , comment = "no comment"
+    }
 
 
 source : Signal.Mailbox Action
@@ -49,7 +50,10 @@ update action model =
           Rating.update act model.rating
 
         updatedComment =
-          if (Rating.getSuggestion act) > 1 then "good!" else "sucks..."
+          if (Rating.getSuggestion act) > 1 then
+            "good!"
+          else
+            "sucks..."
       in
         { model | rating = updatedRating, comment = updatedComment }
 

@@ -2,7 +2,6 @@ module DatepickerExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-
 import Belle.DatePicker.Config as Config
 import Belle.DatePicker.Model as Model
 import Belle.DatePicker as DatePicker
@@ -10,7 +9,6 @@ import Html.Attributes exposing (attribute, property)
 import Signal
 import Util
 import Json.Encode exposing (string)
-
 import Time exposing (Time, every, second)
 import Date exposing (Date, year, hour, minute, second, fromTime, month, day)
 
@@ -21,7 +19,7 @@ type alias Model =
 
 init : Model
 init =
-  { datepicker = Model.init (1, 1, 2016) }
+  { datepicker = Model.init ( 1, 1, 2016 ) }
 
 
 source : Signal.Mailbox Action
@@ -70,13 +68,15 @@ state =
   Signal.foldp update init source.signal
 
 
+
 -- helpers
+
 
 maybeToString : Maybe Date -> String
 maybeToString date =
   case date of
     Just date ->
-      (toString (year date))++(toString (month date))++(toString (day date))
+      (toString (year date)) ++ (toString (month date)) ++ (toString (day date))
 
     Nothing ->
       "default date"

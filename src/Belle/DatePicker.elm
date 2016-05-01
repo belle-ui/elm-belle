@@ -9,8 +9,6 @@ import Json.Decode as Json
 import Time exposing (Time)
 import Date exposing (Date, Month)
 import Debug
-
-
 import Belle.DatePicker.Config exposing (Config, DateTuple)
 import Belle.DatePicker.Model exposing (Model)
 import Belle.DatePicker.Helpers exposing (validateDate, changeDay, changeMonth, daysInMonth, dayOfWeek, getYear)
@@ -41,7 +39,7 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view address model =
   let
-    choosen = 
+    choosen =
       model.value
 
     suggestion =
@@ -63,10 +61,10 @@ view address model =
 
 
 viewMonth : Signal.Address Action -> DateTuple -> Html
-viewMonth address (day, month, year) =
+viewMonth address ( day, month, year ) =
   let
     date =
-      (day, month, year)
+      ( day, month, year )
 
     prevMonth =
       changeMonth date (month - 1)
@@ -83,41 +81,41 @@ viewMonth address (day, month, year) =
 
 
 createDays : Signal.Address Action -> DateTuple -> DateTuple -> List Html
-createDays address (day, month, year) choosen =
+createDays address ( day, month, year ) choosen =
   let
     date =
-      (day, month, year)
+      ( day, month, year )
 
     prefix =
-      (1, month, year)
-      |> dayOfWeek
+      ( 1, month, year )
+        |> dayOfWeek
 
     prev =
-      changeMonth (day, month, year) (month-1)
+      changeMonth date (month - 1)
 
     daysInPrev =
       daysInMonth prev
 
     prefixDate =
-      changeDay prev (daysInPrev-prefix+1)
+      changeDay prev (daysInPrev - prefix + 1)
 
     next =
-      changeMonth date (month+1)
+      changeMonth date (month + 1)
 
-    daysInMonth' =
+    daysInCurrent =
       daysInMonth date
 
     postfix =
-      42 - daysInMonth' - prefix
+      42 - daysInCurrent - prefix
 
     createDay =
-      (\(init, month, year) day -> viewDay address (init+day, month, year) choosen)
+      (\( init, month, year ) day -> viewDay address ( init + day, month, year ) choosen)
 
     prefixDays =
       Array.initialize prefix (createDay prefixDate)
 
     days =
-      Array.initialize daysInMonth' (createDay (1, month, year))
+      Array.initialize daysInCurrent (createDay ( 1, month, year ))
 
     postfixDays =
       Array.initialize postfix (createDay next)
@@ -128,10 +126,10 @@ createDays address (day, month, year) choosen =
 
 
 viewDay : Signal.Address Action -> DateTuple -> DateTuple -> Html
-viewDay address (day, month, year) (choosenDay, choosenMonth, choosenYear) =
+viewDay address ( day, month, year ) ( choosenDay, choosenMonth, choosenYear ) =
   let
     date =
-      (day, month, year)
+      ( day, month, year )
 
     highlight =
       day == choosenDay && month == choosenMonth && year == choosenYear
@@ -140,14 +138,11 @@ viewDay address (day, month, year) (choosenDay, choosenMonth, choosenYear) =
       [ ( "BelleDatePickerDay", True )
       , ( "BelleDatePickerDayHighlight", highlight )
       ]
-
-    attr =
+  in
+    div
       [ classList classes
       , onClick address (SetValue date)
       ]
-  in
-    div
-      attr
       [ text (toString day) ]
 
 

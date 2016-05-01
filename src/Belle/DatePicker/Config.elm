@@ -3,7 +3,10 @@ module Belle.DatePicker.Config (Config, DateTuple, setMinDate, setMaxDate, setTh
 import Date exposing (Date)
 import Time exposing (Time, every, hour)
 
-type alias DateTuple = (Int, Int, Int)
+
+type alias DateTuple =
+  ( Int, Int, Int )
+
 
 type alias Config =
   { minDate : DateTuple
@@ -12,12 +15,12 @@ type alias Config =
   }
 
 
-setMinDate : (Int, Int, Int) -> Config -> Config
+setMinDate : ( Int, Int, Int ) -> Config -> Config
 setMinDate minDate config =
   { config | minDate = minDate }
 
 
-setMaxDate : (Int, Int, Int) -> Config -> Config
+setMaxDate : ( Int, Int, Int ) -> Config -> Config
 setMaxDate maxDate config =
   { config | maxDate = maxDate }
 
@@ -29,8 +32,8 @@ setTheme theme config =
 
 defaultConfig : Config
 defaultConfig =
-  { minDate = (30, 1, 2015)
-  , maxDate = (30, 1, 2017)
+  { minDate = ( 30, 1, 2015 )
+  , maxDate = ( 30, 1, 2017 )
   , theme = "defaultTheme"
   }
 

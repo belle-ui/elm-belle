@@ -2,16 +2,16 @@ module ButtonExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-
 import Belle.Button as Button
 import Html.Attributes exposing (attribute, property)
 import Signal
 import Util
 
+
 type alias Model =
   { firstButton : Button.Model
   , secondButton : Button.Model
-  , counter: Int
+  , counter : Int
   }
 
 
@@ -26,6 +26,7 @@ init =
     , secondButton = Button.init (text "Or follow me here")
     , counter = 0
     }
+
 
 source : Signal.Mailbox Action
 source =
@@ -46,6 +47,7 @@ update action model =
     TrackClick act ->
       { model | counter = model.counter + 1 }
 
+
 view : Model -> Html
 view model =
   div
@@ -55,10 +57,9 @@ view model =
         [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton
         , Button.view (Signal.forwardTo source.address TrackClick) model.secondButton
         , div
-          []
-          [ text ("Counter: " ++ toString model.counter) ]
+            []
+            [ text ("Counter: " ++ toString model.counter) ]
         ]
-
     , Util.stylesheetLink "/rating-example.css"
     ]
 

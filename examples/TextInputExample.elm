@@ -2,7 +2,6 @@ module TextInputExample (..) where
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-
 import Belle.TextInput as TextInput
 import Html.Attributes exposing (attribute, property)
 import Signal
@@ -48,8 +47,9 @@ update action model =
 view : Model -> Int -> Html
 view model height =
   let
-    test = Debug.log "height" height
-  in 
+    test =
+      Debug.log "height" height
+  in
     div
       []
       [ span [] [ text (toString model.textInput) ]
@@ -70,8 +70,8 @@ state =
   Signal.foldp update init source.signal
 
 
+
 -- ports
 
 
 port textFieldHeight : Signal Int
-

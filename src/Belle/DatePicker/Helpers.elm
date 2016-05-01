@@ -1,12 +1,4 @@
-module Belle.DatePicker.Helpers 
-  ( daysInMonth
-  , dayOfWeek
-  , changeDay
-  , changeMonth
-  , getYear
-  , validateDate
-  ) where
-
+module Belle.DatePicker.Helpers (daysInMonth, dayOfWeek, changeDay, changeMonth, getYear, validateDate) where
 
 import Date exposing (..)
 import Time exposing (..)
@@ -14,29 +6,30 @@ import String exposing (..)
 import Debug
 
 
-getYear : (Int, Int, Int) -> Int 
-getYear (day, month, year) =
+getYear : ( Int, Int, Int ) -> Int
+getYear ( day, month, year ) =
   year
 
 
-validateDate : (Int, Int, Int) -> (Int, Int, Int)
-validateDate (day, month, year) =
+validateDate : ( Int, Int, Int ) -> ( Int, Int, Int )
+validateDate ( day, month, year ) =
   let
     dateString =
       (toString year) ++ "/" ++ (toString month) ++ "/" ++ (toString day)
 
-    maybeDate = Result.toMaybe (Date.fromString dateString)
-  in 
+    maybeDate =
+      Result.toMaybe (Date.fromString dateString)
+  in
     case maybeDate of
       Just date ->
-        (day, month, year)
+        ( day, month, year )
 
       Nothing ->
-        (1, 1, 1970)
+        ( 1, 1, 1970 )
 
 
-daysInMonth : (Int, Int, Int) -> Int
-daysInMonth (_, month, year) =
+daysInMonth : ( Int, Int, Int ) -> Int
+daysInMonth ( _, month, year ) =
   let
     leapDay =
       getLeapDay year
@@ -51,7 +44,7 @@ getLeapDay : Int -> Int
 getLeapDay year =
   let
     isLeapYear =
-      year%4 > 0 || year%100 == 0 && year%400 > 0
+      year % 4 > 0 || year % 100 == 0 && year % 400 > 0
   in
     if isLeapYear then
       0
@@ -59,21 +52,21 @@ getLeapDay year =
       1
 
 
-changeDay : (Int, Int, Int) -> Int -> (Int, Int, Int)
-changeDay (day, month, year) newDay =
-  (newDay, month, year)
+changeDay : ( Int, Int, Int ) -> Int -> ( Int, Int, Int )
+changeDay ( day, month, year ) newDay =
+  ( newDay, month, year )
 
 
-changeMonth : (Int, Int, Int) -> Int -> (Int, Int, Int)
-changeMonth (day, month, year) newMonth =
+changeMonth : ( Int, Int, Int ) -> Int -> ( Int, Int, Int )
+changeMonth ( day, month, year ) newMonth =
   let
-    validMonth = 
+    validMonth =
       validateMonth newMonth
 
     validYear =
       validateYear newMonth year
   in
-    (1, validMonth, validYear)
+    ( 1, validMonth, validYear )
 
 
 validateMonth : Int -> Int
@@ -82,60 +75,68 @@ validateMonth month =
     month - 12
   else if month < 1 then
     12 + month
-  else 
+  else
     month
 
 
 validateYear : Int -> Int -> Int
 validateYear month year =
   if month > 12 then
-    year+1
+    year + 1
   else if month < 1 then
-    year-1
-  else 
+    year - 1
+  else
     year
 
 
-dayOfWeek : (Int, Int, Int) -> Int -- Zeller's Rule
-dayOfWeek (day, month, year) =
-  let 
-    zellerMonth = 
-      validateMonth (month-2)
+dayOfWeek : ( Int, Int, Int ) -> Int
 
-    zellerYear = 
-      validateYear (month-2) year
+
+
+-- Zeller's Rule
+
+
+dayOfWeek ( day, month, year ) =
+  let
+    zellerMonth =
+      validateMonth (month - 2)
+
+    zellerYear =
+      validateYear (month - 2) year
 
     lastTwo =
       zellerYear
-      |> toString
-      |> String.right 2
-      |> String.toInt
-      |> Result.withDefault 0 
+        |> toString
+        |> String.right 2
+        |> String.toInt
+        |> Result.withDefault 0
 
-    firstTwo = 
+    firstTwo =
       (zellerYear - lastTwo)
-      |> Basics.toFloat
-      |> (*)(1/100)
-      |> round
-      
+        |> Basics.toFloat
+        |> (*) (1 / 100)
+        |> round
 
-    a = 
-      (13*zellerMonth-1)
-      |> Basics.toFloat
-      |> (*)(1/5)
-      |> floor
+    a =
+      (13 * zellerMonth - 1)
+        |> Basics.toFloat
+        |> (*) (1 / 5)
+        |> floor
 
     b =
-      (Basics.toFloat lastTwo)/4
-      |> floor
+      (Basics.toFloat lastTwo)
+        / 4
+        |> floor
 
-    c = 
-      (Basics.toFloat firstTwo)/4
-      |> floor
+    c =
+      (Basics.toFloat firstTwo)
+        / 4
+        |> floor
 
-    dayOfWeek = 
-      (day + a + lastTwo + b + c - 2*firstTwo)%7
-
+    dayOfWeek =
+      (day + a + lastTwo + b + c - 2 * firstTwo) % 7
   in
-    if dayOfWeek == 0 then 6 else dayOfWeek-1
-
+    if dayOfWeek == 0 then
+      6
+    else
+      dayOfWeek - 1
