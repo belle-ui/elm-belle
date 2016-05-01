@@ -11,72 +11,73 @@ import Date exposing (Date, Month)
 import Debug
 
 
-import Belle.DatePicker.Config exposing (Config)
+import Belle.DatePicker.Config exposing (Config, DateTuple)
 import Belle.DatePicker.Model exposing (Model)
+import Belle.DatePicker.Helpers exposing (validateDate, changeMonth, daysInMonth, dayOfWeek, getYear)
 
 
 -- Update
 
 
 type Action
-  = SetValue (Maybe Date)
-  | SetSuggestion (Maybe Date)
+  = SetValue DateTuple
+  | SetSuggestion DateTuple
 
 
 update : Action -> Model -> Model
 update action model =
   case action of
-    SetValue value ->
-      { model | value = value, suggesting = value }
+    SetValue date ->
+      { model | value = date, suggesting = date }
 
-    SetSuggestion value ->
-      { model | suggesting = value }
+    SetSuggestion date ->
+      { model | suggesting = date }
 
 
 
 -- View
 
 
-view : Signal.Address Action -> Model -> Time -> Html
-view address model time =
+view : Signal.Address Action -> Model -> Html
+view address model =
   let
-    value =
-      validDate time model.value
+    picked = 
+      model.value
 
     suggestion =
-      validDate time model.suggesting
+      model.suggesting
 
     days =
-      createDays address suggestion time
+      createDays address suggestion
 
     classes =
       [ ( "BelleDatePicker", True ) ]
   in
     div
       [ classList classes ]
-      [ text (toString (Date.year suggestion))
+      [ text (toString (getYear suggestion))
       , div [] [ viewMonth address suggestion ]
       , div [] viewWeekDays
       , div [] days
       ]
 
 
-viewMonth : Signal.Address Action -> Date -> Html
-viewMonth address date =
+viewMonth : Signal.Address Action -> DateTuple -> Html
+viewMonth address (day, month, year) =
   let
-    monthInt =
-      monthAsInt (Date.month date)
+    date =
+      (day, month, year)
 
     prevMonth =
-      changeDate date (Month (monthInt - 1))
+      changeMonth date (month - 1)
 
     nextMonth =
-      changeDate date (Month (monthInt + 1))
+      changeMonth date (month + 1)
   in
     div
       []
       [ span [ onClick address (SetSuggestion prevMonth) ] [ text "<" ]
-      , text (toString (Date.month date))
+      , text (toString month)
       , span [ onClick address (SetSuggestion nextMonth) ] [ text ">" ]
       ]
 
@@ -93,19 +94,17 @@ viewWeekDays =
   ]
 
 
-createDays : Signal.Address Action -> Date.Date -> Time -> List Html
-createDays address date time =
+createDays : Signal.Address Action -> DateTuple -> List Html
+createDays address (day, month, year) =
   let
-    monthInt =
-      monthAsInt (Date.month date)
+    date =
+      (day, month, year)
 
     prevMonth =
-      changeDate date (Month (monthInt - 1))
-        |> validDate time
+      changeMonth date (month - 1)
 
     nextMonth =
-      changeDate date (Month (monthInt + 1))
-        |> validDate time
+      changeMonth date (month + 1)
 
     daysInMonth' =
       daysInMonth date
@@ -113,20 +112,15 @@ createDays address date time =
     daysInPrevMonth =
       daysInMonth prevMonth
 
-    day =
-      Date.day date
-
     prefix =
-      changeDate date (Day 1)
-        |> validDate time
-        |> Date.dayOfWeek
-        |> dayAsInt
+      (1, month, year)
+        |> dayOfWeek
 
     postfix =
       42 - daysInMonth' - prefix
 
     createDay =
-      (\from value disabled day -> viewDay address value (from + day) time disabled)
+      (\from (_, month, year) disabled day -> viewDay address (from + day, month, year) disabled)
 
     prefixDays =
       Array.initialize prefix (createDay (daysInPrevMonth - prefix) prevMonth True)
@@ -142,14 +136,14 @@ createDays address date time =
       ++ Array.toList postfixDays
 
 
-viewDay : Signal.Address Action -> Date -> Int -> Time -> Bool -> Html
-viewDay address value dayRaw time disabled =
+viewDay : Signal.Address Action -> DateTuple -> Bool -> Html
+viewDay address (dayZero, month, year) disabled =
   let
-    day =
-      dayRaw + 1
+    day = 
+      dayZero+1
 
     date =
-      changeDate value (Day day)
+      (day, month, year)
 
     classes =
       [ ( "BelleDatePickerDay", True )
@@ -166,197 +160,3 @@ viewDay address value dayRaw time disabled =
       [ text (toString day) ]
 
 
-
--- helpers
-
-
-maybeDate : String -> Maybe Date
-maybeDate string =
-  Result.toMaybe (Date.fromString string)
-
-
-validDate : Time -> Maybe Date -> Date
-validDate default value =
-  case value of
-    Just date ->
-      date
-
-    Nothing ->
-      (Date.fromTime default)
-
-
-daysInMonth : Date -> Int
-daysInMonth date =
-  let
-    month =
-      Date.month date
-
-    monthInt =
-      monthAsInt month
-
-    leapDay =
-      getLeapDay date
-  in
-    if month == Date.Feb then
-      (28 + leapDay)
-    else
-      (31 - (monthInt - 1) % 7 % 2)
-
-
-getLeapDay : Date -> Int
-getLeapDay date =
-  let
-    year =
-      Date.year date
-
-    reminder4 =
-      year % 4
-
-    reminder100 =
-      year % 100
-
-    reminder400 =
-      year % 400
-
-    isLeapYear =
-      reminder4 > 0 || reminder100 == 0 && reminder400 > 0
-  in
-    if isLeapYear then
-      0
-    else
-      1
-
-
-monthAsInt : Date.Month -> Int
-monthAsInt month =
-  case month of
-    Date.Jan ->
-      1
-
-    Date.Feb ->
-      2
-
-    Date.Mar ->
-      3
-
-    Date.Apr ->
-      4
-
-    Date.May ->
-      5
-
-    Date.Jun ->
-      6
-
-    Date.Jul ->
-      7
-
-    Date.Aug ->
-      8
-
-    Date.Sep ->
-      9
-
-    Date.Oct ->
-      10
-
-    Date.Nov ->
-      11
-
-    Date.Dec ->
-      12
-
-
-dayAsInt : Date.Day -> Int
-dayAsInt day =
-  case day of
-    Date.Mon ->
-      0
-
-    Date.Tue ->
-      1
-
-    Date.Wed ->
-      2
-
-    Date.Thu ->
-      3
-
-    Date.Fri ->
-      4
-
-    Date.Sat ->
-      5
-
-    Date.Sun ->
-      6
-
-
-type Changable
-  = Day Int
-  | Month Int
-
-
-changeDate : Date -> Changable -> Maybe Date
-changeDate date change =
-  case change of
-    Day day ->
-      let
-        month =
-          Date.month date
-            |> monthAsInt
-
-        year =
-          Date.year date
-      in
-        assembleDate year month day
-
-    Month monthRaw ->
-      let
-        day =
-          Date.day date
-
-        month =
-          monthRaw
-            |> getSafeMonth
-
-        year =
-          Date.year date
-            |> getSafeYear monthRaw
-      in
-        assembleDate year month day
-
-
-assembleDate : Int -> Int -> Int -> Maybe Date
-assembleDate year month day =
-  let
-    dateString =
-      (toString year) ++ "/" ++ (toString month) ++ "/" ++ (toString day)
-  in
-    maybeDate dateString
-
-
-getSafeMonth : Int -> Int
-getSafeMonth month =
-  case month of
-    13 ->
-      1
-
-    0 ->
-      12
-
-    _ ->
-      month
-
-
-getSafeYear : Int -> Int -> Int
-getSafeYear month year =
-  case month of
-    13 ->
-      year + 1
-
-    0 ->
-      year - 1
-
-    _ ->
-      year

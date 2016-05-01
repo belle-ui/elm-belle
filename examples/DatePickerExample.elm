@@ -21,11 +21,7 @@ type alias Model =
 
 init : Model
 init =
-  let
-    config =
-      Config.defaultConfig
-  in
-    { datepicker = Model.initWithConfig "2016/4/1" config }
+  { datepicker = Model.init (1, 1, 2016) }
 
 
 source : Signal.Mailbox Action
@@ -56,11 +52,10 @@ view : Model -> Time -> Html
 view model time =
   div
     []
-    [ div [] [ text (maybeToString model.datepicker.value) ]
-    , div [] [ text (maybeToString model.datepicker.suggesting) ]
+    [ div [] [ text (toString model.datepicker) ]
     , div
         []
-        [ DatePicker.view (Signal.forwardTo source.address DatePicker) model.datepicker time ]
+        [ DatePicker.view (Signal.forwardTo source.address DatePicker) model.datepicker ]
     , Util.stylesheetLink "/datepicker-example.css"
     ]
 

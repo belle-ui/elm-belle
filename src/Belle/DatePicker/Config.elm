@@ -1,24 +1,27 @@
-module Belle.DatePicker.Config (Config, setMinDate, setMaxDate, setTheme, defaultConfig, defaultTime) where
+module Belle.DatePicker.Config (Config, DateTuple, setMinDate, setMaxDate, setTheme, defaultConfig, defaultTime) where
 
 import Date exposing (Date)
 import Time exposing (Time, every, hour)
 import Belle.DatePicker.Helpers exposing (maybeDate)
 
+
+type alias DateTuple = (Int, Int, Int)
+
 type alias Config =
-  { minDate : Maybe Date
-  , maxDate : Maybe Date
+  { minDate : DateTuple
+  , maxDate : DateTuple
   , theme : String
   }
 
 
-setMinDate : String -> Config -> Config
+setMinDate : (Int, Int, Int) -> Config -> Config
 setMinDate minDate config =
-  { config | minDate = maybeDate minDate }
+  { config | minDate = minDate }
 
 
-setMaxDate : String -> Config -> Config
+setMaxDate : (Int, Int, Int) -> Config -> Config
 setMaxDate maxDate config =
-  { config | maxDate = maybeDate maxDate }
+  { config | maxDate = maxDate }
 
 
 setTheme : String -> Config -> Config
@@ -28,8 +31,8 @@ setTheme theme config =
 
 defaultConfig : Config
 defaultConfig =
-  { minDate = maybeDate "2015/1/1"
-  , maxDate = maybeDate "2017/1/1"
+  { minDate = (30, 1, 2015)
+  , maxDate = (30, 1, 2017)
   , theme = "defaultTheme"
   }
 

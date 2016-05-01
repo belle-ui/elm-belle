@@ -1,8 +1,51 @@
-module Belle.DatePicker.Helpers (maybeDate, validDate, daysInMonth, getLeapDay, getSafeYear, getSafeMonth, monthAsInt, dayAsInt, changeDate) where
+module Belle.DatePicker.Helpers (maybeDate, validDate, daysInMonth, getLeapDay, validateYear, validateMonth, dayOfWeek, changeMonth, getDay, getMonth, getYear, validateDate) where
 
 
 import Date exposing (..)
 import Time exposing (..)
+import String exposing (..)
+import Debug
+
+
+getDay : (Int, Int, Int) -> Int 
+getDay (day, month, year) =
+  day
+
+
+getMonth : (Int, Int, Int) -> Int 
+getMonth (day, month, year) =
+  month
+
+
+getYear : (Int, Int, Int) -> Int 
+getYear (day, month, year) =
+  year
+
+
+validateDate : (Int, Int, Int) -> (Int, Int, Int)
+validateDate (day, month, year) =
+  let
+    dateString =
+      (toString year) ++ "/" ++ (toString month) ++ "/" ++ (toString day)
+
+    maybeDate = Result.toMaybe (Date.fromString dateString)
+  in 
+    case maybeDate of
+      Just date ->
+        (day, month, year)
+
+      Nothing ->
+        (1, 1, 1970)
+
+
+assembleDate : (Int, Int, Int) -> Maybe Date
+assembleDate (year, month, day) =
+  let
+    dateString =
+      (toString year) ++ "/" ++ (toString month) ++ "/" ++ (toString day)
+  in
+    maybeDate dateString
+
 
 maybeDate : String -> Maybe Date
 maybeDate string =
@@ -19,30 +62,21 @@ validDate default value =
       (Date.fromTime default)
 
 
-daysInMonth : Date -> Int
-daysInMonth date =
+daysInMonth : (Int, Int, Int) -> Int
+daysInMonth (day, month, year) =
   let
-    month =
-      Date.month date
-
-    monthInt =
-      monthAsInt month
-
     leapDay =
-      getLeapDay date
+      getLeapDay year
   in
-    if month == Date.Feb then
+    if month == 2 then
       (28 + leapDay)
     else
-      (31 - (monthInt - 1) % 7 % 2)
+      (31 - (month - 1) % 7 % 2)
 
 
-getLeapDay : Date -> Int
-getLeapDay date =
+getLeapDay : Int -> Int
+getLeapDay year =
   let
-    year =
-      Date.year date
-
     reminder4 =
       year % 4
 
@@ -61,136 +95,91 @@ getLeapDay date =
       1
 
 
-monthAsInt : Date.Month -> Int
-monthAsInt month =
-  case month of
-    Date.Jan ->
-      1
-
-    Date.Feb ->
-      2
-
-    Date.Mar ->
-      3
-
-    Date.Apr ->
-      4
-
-    Date.May ->
-      5
-
-    Date.Jun ->
-      6
-
-    Date.Jul ->
-      7
-
-    Date.Aug ->
-      8
-
-    Date.Sep ->
-      9
-
-    Date.Oct ->
-      10
-
-    Date.Nov ->
-      11
-
-    Date.Dec ->
-      12
-
-
-dayAsInt : Date.Day -> Int
-dayAsInt day =
-  case day of
-    Date.Mon ->
-      0
-
-    Date.Tue ->
-      1
-
-    Date.Wed ->
-      2
-
-    Date.Thu ->
-      3
-
-    Date.Fri ->
-      4
-
-    Date.Sat ->
-      5
-
-    Date.Sun ->
-      6
-
-
 type Changable
   = Day Int
-  | Month Int
+  | Month Int  
 
 
-changeDate : Date -> Changable -> Maybe Date
-changeDate date change =
-  case change of
-    Day day ->
-      let
-        month =
-          Date.month date
-            |> monthAsInt
-
-        year =
-          Date.year date
-      in
-        assembleDate year month day
-
-    Month monthRaw ->
-      let
-        day =
-          Date.day date
-
-        month =
-          monthRaw
-            |> getSafeMonth
-
-        year =
-          Date.year date
-            |> getSafeYear monthRaw
-      in
-        assembleDate year month day
-
-
-assembleDate : Int -> Int -> Int -> Maybe Date
-assembleDate year month day =
+changeMonth : (Int, Int, Int) -> Int -> (Int, Int, Int)
+changeMonth (day, month, year) newMonth =
   let
-    dateString =
-      (toString year) ++ "/" ++ (toString month) ++ "/" ++ (toString day)
+    validMonth = 
+      validateMonth newMonth
+
+    validYear =
+      validateYear newMonth year
   in
-    maybeDate dateString
+    (1, validMonth, validYear)
+
+validateMonth : Int -> Int
+validateMonth month =
+  let 
+    overflow = 
+      if month > 12 then month-12 else 0
+    
+    underflow = 
+      if month < 1 then 12+month else 0
+    
+    result = 
+      overflow + underflow
+  in 
+    if result > 0 then result else month
 
 
-getSafeMonth : Int -> Int
-getSafeMonth month =
-  case month of
-    13 ->
-      1
+validateYear : Int -> Int -> Int
+validateYear month year =
+  let 
+    overflow = 
+      if month > 12 then year+1 else 0
+    
+    underflow = 
+      if month < 1 then year-1 else 0
+    
+    result = overflow + underflow
+  in 
+    if result > 0 then result else year
 
-    0 ->
-      12
 
-    _ ->
-      month
+dayOfWeek : (Int, Int, Int) -> Int -- Zeller's Rule
+dayOfWeek (day, month, year) =
+  let 
+    zellerMonth = 
+      validateMonth (month-2)
 
+    zellerYear = 
+      validateYear (month-2) year
 
-getSafeYear : Int -> Int -> Int
-getSafeYear month year =
-  case month of
-    13 ->
-      year + 1
+    lastTwo =
+      zellerYear
+      |> toString
+      |> String.right 2
+      |> String.toInt
+      |> Result.withDefault 0 
 
-    0 ->
-      year - 1
+    firstTwo = 
+      (zellerYear - lastTwo)
+      |> Basics.toFloat
+      |> (*)(1/100)
+      |> round
+      
 
-    _ ->
-      year
+    a = 
+      (13*zellerMonth-1)
+      |> Basics.toFloat
+      |> (*)(1/5)
+      |> floor
+
+    b =
+      (Basics.toFloat lastTwo)/4
+      |> floor
+
+    c = 
+      (Basics.toFloat firstTwo)/4
+      |> floor
+
+    dayOfWeek = 
+      (day + a + lastTwo + b + c - 2*firstTwo)%7
+
+  in
+    if dayOfWeek == 0 then 6 else dayOfWeek-1
+

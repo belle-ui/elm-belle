@@ -1,27 +1,27 @@
 module Belle.DatePicker.Model (Model, init, initWithConfig) where
 
 import Date exposing (Date)
-import Belle.DatePicker.Config exposing (Config, defaultConfig)
-import Belle.DatePicker.Helpers exposing (maybeDate)
+import Belle.DatePicker.Config exposing (Config, DateTuple, defaultConfig)
+import Belle.DatePicker.Helpers exposing (validateDate)
 
 type alias Model =
-  { value : Maybe Date
-  , suggesting : Maybe Date
+  { value : DateTuple
+  , suggesting : DateTuple
   , config : Config
   }
 
 
-init : String -> Model
+init : DateTuple -> Model
 init value =
-  { value = maybeDate value
-  , suggesting = maybeDate value
+  { value = validateDate value
+  , suggesting = validateDate value
   , config = defaultConfig
   }
 
 
-initWithConfig : String -> Config -> Model
+initWithConfig : DateTuple -> Config -> Model
 initWithConfig value config =
-  { value = maybeDate value
-  , suggesting = maybeDate value
+  { value = validateDate value
+  , suggesting = validateDate value
   , config = config
   }
