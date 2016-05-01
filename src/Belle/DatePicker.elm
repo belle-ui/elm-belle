@@ -13,7 +13,7 @@ import Debug
 
 import Belle.DatePicker.Config exposing (Config, DateTuple)
 import Belle.DatePicker.Model exposing (Model)
-import Belle.DatePicker.Helpers exposing (validateDate, changeMonth, daysInMonth, dayOfWeek, getYear)
+import Belle.DatePicker.Helpers exposing (validateDate, changeDay, changeMonth, daysInMonth, dayOfWeek, getYear)
 
 
 -- Update
@@ -100,48 +100,48 @@ createDays address (day, month, year) =
     date =
       (day, month, year)
 
-    prevMonth =
-      changeMonth date (month - 1)
+    prefix =
+      (1, month, year)
+      |> dayOfWeek
 
-    nextMonth =
-      changeMonth date (month + 1)
+    prev =
+      changeMonth (day, month, year) (month-1)
+
+    daysInPrev =
+      daysInMonth prev
+
+    prefixDate =
+      changeDay prev (daysInPrev-prefix+1)
+
+    next =
+      changeMonth date (month+1)
 
     daysInMonth' =
       daysInMonth date
-
-    daysInPrevMonth =
-      daysInMonth prevMonth
-
-    prefix =
-      (1, month, year)
-        |> dayOfWeek
 
     postfix =
       42 - daysInMonth' - prefix
 
     createDay =
-      (\from (_, month, year) disabled day -> viewDay address (from + day, month, year) disabled)
+      (\(init, month, year) day -> viewDay address (init+day, month, year))
 
     prefixDays =
-      Array.initialize prefix (createDay (daysInPrevMonth - prefix) prevMonth True)
+      Array.initialize prefix (createDay prefixDate)
 
     days =
-      Array.initialize daysInMonth' (createDay 0 date False)
+      Array.initialize daysInMonth' (createDay (1, month, year))
 
     postfixDays =
-      Array.initialize postfix (createDay 0 nextMonth True)
+      Array.initialize postfix (createDay next)
   in
     Array.toList prefixDays
       ++ Array.toList days
       ++ Array.toList postfixDays
 
 
-viewDay : Signal.Address Action -> DateTuple -> Bool -> Html
-viewDay address (dayZero, month, year) disabled =
+viewDay : Signal.Address Action -> DateTuple -> Html
+viewDay address (day, month, year) =
   let
-    day = 
-      dayZero+1
-
     date =
       (day, month, year)
 

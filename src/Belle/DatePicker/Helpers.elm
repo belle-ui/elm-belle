@@ -1,4 +1,4 @@
-module Belle.DatePicker.Helpers (maybeDate, validDate, daysInMonth, getLeapDay, validateYear, validateMonth, dayOfWeek, changeMonth, getDay, getMonth, getYear, validateDate) where
+module Belle.DatePicker.Helpers (maybeDate, validDate, daysInMonth, getLeapDay, validateYear, validateMonth, dayOfWeek, changeDay, changeMonth, getDay, getMonth, getYear, validateDate) where
 
 
 import Date exposing (..)
@@ -63,7 +63,7 @@ validDate default value =
 
 
 daysInMonth : (Int, Int, Int) -> Int
-daysInMonth (day, month, year) =
+daysInMonth (_, month, year) =
   let
     leapDay =
       getLeapDay year
@@ -95,9 +95,9 @@ getLeapDay year =
       1
 
 
-type Changable
-  = Day Int
-  | Month Int  
+changeDay : (Int, Int, Int) -> Int -> (Int, Int, Int)
+changeDay (day, month, year) newDay =
+  (newDay, month, year)
 
 
 changeMonth : (Int, Int, Int) -> Int -> (Int, Int, Int)
@@ -110,6 +110,7 @@ changeMonth (day, month, year) newMonth =
       validateYear newMonth year
   in
     (1, validMonth, validYear)
+
 
 validateMonth : Int -> Int
 validateMonth month =
