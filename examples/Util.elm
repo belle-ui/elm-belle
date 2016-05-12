@@ -1,11 +1,11 @@
-module Util (..) where
+module Util exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Json.Encode exposing (string)
 
 
-stylesheetLink : String -> Html
+stylesheetLink : String -> Html.Html a
 stylesheetLink url =
   Html.node
     "link"

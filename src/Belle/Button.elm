@@ -1,4 +1,4 @@
-module Belle.Button (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme) where
+module Belle.Button exposing (view, update, Msg, Model, init, initWithConfig, defaultConfig, Config, setTheme)
 
 import Html exposing (Html, Attribute, button)
 import Html.Attributes exposing (classList)
@@ -27,18 +27,18 @@ defaultConfig =
 
 type alias Model =
   { config : Config
-  , content : Html
+  , content : Html Msg
   }
 
 
-init : Html -> Model
+init : Html Msg -> Model
 init content =
   { config = defaultConfig
   , content = content
   }
 
 
-initWithConfig : Html -> Config -> Model
+initWithConfig : Html Msg -> Config -> Model
 initWithConfig content config =
   { config = config
   , content = content
@@ -48,16 +48,13 @@ initWithConfig content config =
 -- Update
 
 
-type Action
-  = UpdateContent Html
-  | ClickButton
+type Msg
+  = ClickButton
 
 
-update : Action -> Model -> Model
-update action model =
-  case action of
-    UpdateContent content ->
-      { model | content = content }
+update : Msg -> Model -> Model
+update msg model =
+  case msg of
 
     ClickButton ->
       model
@@ -66,13 +63,13 @@ update action model =
 -- View
 
 
-view : Signal.Address Action -> Model -> Html
-view address model =
+view : Model -> Html Msg
+view model =
   let
     classes =
       [ ( "BelleButton", True ) ] ++ [ ( model.config.theme, True ) ]
   in
     button
       [ classList classes
-      , onClick address ClickButton ]
+      , onClick ClickButton ]
       [ model.content ]
