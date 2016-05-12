@@ -2,7 +2,7 @@ module Belle.Rating exposing (view, update, Msg, Model, init, initWithConfig, de
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (classList)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, onMouseEnter, onMouseLeave)
 import Array
 
 
@@ -38,6 +38,7 @@ defaultConfig =
 
 type alias Model =
   { value : Int
+  , focusedValue: Maybe Int
   , config : Config
   }
 
@@ -45,6 +46,7 @@ type alias Model =
 init : Int -> Model
 init value =
   { value = value
+  , focusedValue = Nothing
   , config = defaultConfig
   }
 
@@ -52,6 +54,7 @@ init value =
 initWithConfig : Int -> Config -> Model
 initWithConfig value config =
   { value = value
+  , focusedValue = Nothing
   , config = config
   }
 
@@ -62,6 +65,7 @@ initWithConfig value config =
 
 type Msg
   = SetValue Int
+  | SetFocusedValue (Maybe Int)
 
 
 update : Msg -> Model -> Model
@@ -70,6 +74,8 @@ update action model =
     SetValue value ->
       { model | value = value }
 
+    SetFocusedValue focusedValue ->
+      { model | focusedValue = focusedValue }
 
 
 -- View
@@ -96,7 +102,9 @@ view model =
 
 
 viewStar : Model -> Int -> Html Msg
-viewStar model value =
+viewStar model starValue =
   span
-    [ onClick (SetValue (value + 1)) ]
+    [ onClick (SetValue (starValue + 1))
+    , onMouseEnter (SetFocusedValue (Just (starValue + 1)))
+    , onMouseLeave (SetFocusedValue Nothing) ]
     [ text "★" ]
