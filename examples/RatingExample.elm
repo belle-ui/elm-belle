@@ -1,11 +1,11 @@
-module RatingExample (..) where
+module RatingExample exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
 import Belle.Rating as Rating
 import Html.Attributes exposing (attribute, property)
-import Signal
+import Html.App as App
 import Util
 import Json.Encode exposing (string)
 
@@ -25,47 +25,32 @@ init =
     { rating = Rating.initWithConfig 2 config }
 
 
-source : Signal.Mailbox Action
-source =
-  Signal.mailbox NoOp
+type Msg
+  = Rating Rating.Msg
 
 
-type Action
-  = NoOp
-  | Rating Rating.Action
-
-
-update : Action -> Model -> Model
-update action previous =
-  case action of
-    NoOp ->
-      previous
-
-    Rating act ->
+update : Msg -> Model -> Model
+update msg previous =
+  case msg of
+    Rating ratingMsg ->
       let
         updatedRating =
-          Rating.update act previous.rating
+          Rating.update ratingMsg previous.rating
       in
         { previous | rating = updatedRating }
 
 
-view : Model -> Html
+view : Model -> Html Msg
 view model =
   div
     []
     [ span [] [ text (toString model.rating) ]
     , div
         []
-        [ Rating.view (Signal.forwardTo source.address Rating) model.rating ]
+        [ App.map Rating (Rating.view model.rating) ]
     , Util.stylesheetLink "/rating-example.css"
     ]
 
 
-main : Signal Html
 main =
-  Signal.map view state
-
-
-state : Signal Model
-state =
-  Signal.foldp update init source.signal
+  App.beginnerProgram { model = init , view = view , update = update }
