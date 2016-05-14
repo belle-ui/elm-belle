@@ -1,9 +1,8 @@
-module Belle.Rating (view, update, Action, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxRating) where
+module Belle.Rating exposing (view, update, Msg, Model, init, initWithConfig, defaultConfig, Config, setTheme, setMaxRating)
 
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (classList)
-import Html.Events exposing (onClick)
-import Signal exposing (Signal, Message)
+import Html.Events exposing (onClick, onMouseEnter, onMouseLeave)
 import Array
 
 
@@ -39,6 +38,7 @@ defaultConfig =
 
 type alias Model =
   { value : Int
+  , focusedValue: Maybe Int
   , config : Config
   }
 
@@ -46,6 +46,7 @@ type alias Model =
 init : Int -> Model
 init value =
   { value = value
+  , focusedValue = Nothing
   , config = defaultConfig
   }
 
@@ -53,6 +54,7 @@ init value =
 initWithConfig : Int -> Config -> Model
 initWithConfig value config =
   { value = value
+  , focusedValue = Nothing
   , config = config
   }
 
@@ -61,29 +63,32 @@ initWithConfig value config =
 -- Update
 
 
-type Action
+type Msg
   = SetValue Int
+  | SetFocusedValue (Maybe Int)
 
 
-update : Action -> Model -> Model
+update : Msg -> Model -> Model
 update action model =
   case action of
     SetValue value ->
       { model | value = value }
 
+    SetFocusedValue focusedValue ->
+      { model | focusedValue = focusedValue }
 
 
 -- View
 
 
-view : Signal.Address Action -> Model -> Html
-view address model =
+view : Model -> Html Msg
+view model =
   let
     classes =
       [ ( "BelleRating", True ) ] ++ [ ( model.config.theme, True ) ]
 
     createStar =
-      (\rating -> viewStar address model rating)
+      (\rating -> viewStar model rating)
 
     arrayOfStars =
       Array.initialize model.config.maxRating createStar
@@ -96,8 +101,10 @@ view address model =
       stars
 
 
-viewStar : Signal.Address Action -> Model -> Int -> Html
-viewStar address model value =
+viewStar : Model -> Int -> Html Msg
+viewStar model starValue =
   span
-    [ onClick address (SetValue value) ]
+    [ onClick (SetValue (starValue + 1))
+    , onMouseEnter (SetFocusedValue (Just (starValue + 1)))
+    , onMouseLeave (SetFocusedValue Nothing) ]
     [ text "★" ]

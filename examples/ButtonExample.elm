@@ -1,11 +1,11 @@
-module ButtonExample (..) where
+module ButtonExample exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
 
 import Belle.Button as Button
 import Html.Attributes exposing (attribute, property)
-import Signal
+import Html.App as App
 import Util
 
 type alias Model =
@@ -27,47 +27,34 @@ init =
     , counter = 0
     }
 
-source : Signal.Mailbox Action
-source =
-  Signal.mailbox NoOp
+
+type Msg
+  = TrackClick Button.Msg
 
 
-type Action
-  = NoOp
-  | TrackClick Button.Action
-
-
-update : Action -> Model -> Model
+update : Msg -> Model -> Model
 update action model =
   case action of
-    NoOp ->
-      model
-
-    TrackClick act ->
+    TrackClick msg ->
       { model | counter = model.counter + 1 }
 
-view : Model -> Html
+
+view : Model -> Html Msg
 view model =
   div
     []
     [ div
         []
-        [ Button.view (Signal.forwardTo source.address TrackClick) model.firstButton
-        , Button.view (Signal.forwardTo source.address TrackClick) model.secondButton
+        [ App.map TrackClick (Button.view model.firstButton)
+        , App.map TrackClick (Button.view model.secondButton)
         , div
           []
           [ text ("Counter: " ++ toString model.counter) ]
         ]
 
-    , Util.stylesheetLink "/rating-example.css"
+    , Util.stylesheetLink "/button-example.css"
     ]
 
 
-main : Signal Html
 main =
-  Signal.map view state
-
-
-state : Signal Model
-state =
-  Signal.foldp update init source.signal
+  App.beginnerProgram { model = init , view = view , update = update }
