@@ -1,60 +1,47 @@
-module TooltipExample (..) where
+module TooltipExample exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
-
+import Html.App as App
 import Belle.Tooltip as Tooltip
-import Html.Attributes exposing (attribute, property)
-import Signal
-import Util
+
 
 type alias Model =
-  { firstTooltip: Tooltip.Model
-  }
+  { firstTooltip: Tooltip.State }
+
 
 init : Model
 init =
-  let
-    config =
-       Tooltip.defaultConfig
-        |> Tooltip.setTheme "myfirstButtonTheme"
-  in
-    { firstTooltip = Tooltip.initWithConfig (text "Hi there") (text "I am a tooltip") config 
-    }
+  { firstTooltip = False }
 
-source : Signal.Mailbox Action
-source =
-  Signal.mailbox NoOp
 
-type Action
+
+type Msg
   = NoOp
-  | UpdateTooltip Tooltip.Action
+  | UpdateTooltip Tooltip.Msg
 
-update : Action -> Model -> Model
-update action model =
-  case action of
+
+update : Msg -> Model -> Model
+update msg model =
+  case msg of
     NoOp ->
       model
 
-    UpdateTooltip act ->
-      { model | firstTooltip = Tooltip.update act model.firstTooltip}
+    UpdateTooltip msg ->
+      { model | firstTooltip = Tooltip.update msg model.firstTooltip}
 
-view : Model -> Html
+
+view : Model -> Html Msg
 view model =
-  div
-    []
-    [ div
-        []
-        [ Tooltip.view (Signal.forwardTo source.address UpdateTooltip) model.firstTooltip
-        ]
+  let
+    content = div [] [ text "hey I'm a tooltip" ]
+    trigger = div [] [ text "Hover me pls" ]
+    tooltip = Tooltip.view model.firstTooltip (trigger, content)
+  in
+    div
+      []
+      [ div [] [ App.map UpdateTooltip tooltip ] ]
 
-    , Util.stylesheetLink "/rating-example.css"
-    ]
 
-main : Signal Html
 main =
-  Signal.map view state
-
-state : Signal Model
-state =
-  Signal.foldp update init source.signal
+  App.beginnerProgram { model = init , view = view , update = update }
