@@ -3,8 +3,11 @@ module Belle.Tooltip exposing (..)
 import Html exposing (Html, div)
 import Html.Events exposing (onMouseEnter, onMouseLeave)
 import Html.Attributes exposing (classList, style)
+import Belle.TooltipCss as Style exposing (..)
+import Css exposing (..)
 
-import Debug
+styles =
+    Css.asPairs >> Html.Attributes.style
 
 -- State
 
@@ -26,13 +29,13 @@ update msg state =
 view : State -> (Html Msg, Html Msg) -> Html Msg
 view visible (trigger, content) =
   let
-    displayStyle =
-      if visible then "inline" else "none"
+    contentStyle =
+      if visible then Style.content else Style.hiddenContent
   in
     div
       [ onMouseEnter Show
       , onMouseLeave Hide
       ]
-      [ div [ style [ ("display", displayStyle) ] ] [ trigger ]
-      , div [] [ content ]
+      [ div [] [ trigger ]
+      , div [ styles contentStyle ] [ content ]
       ]
